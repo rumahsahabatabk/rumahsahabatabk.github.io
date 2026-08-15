@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Hubungi Kami</title>
+
+<link rel="stylesheet" href="assets/css/style.css">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+rel="stylesheet">
+
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+<style> 
+
+.page-header{
+    margin-top:83px;
+    padding:110px 20px;
+    color:#fff;
+    text-align:center;
+    background-size:cover;
+    background-position:center;
+}
+
+.page-header h1{
+    font-size:42px;
+}
+
+.contact-section{
+    padding:50px 0;
+}
+
+.contact-wrapper{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:40px;
+}
+
+.contact-info{
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:35px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.10);
+
+}
+
+.contact-info h2{
+
+    margin-bottom:25px;
+
+    color:#003f88;
+
+}
+
+.contact-item{
+
+    display:flex;
+
+    gap:18px;
+
+    margin-bottom:25px;
+
+}
+
+.contact-item i{
+
+    width:50px;
+    height:50px;
+
+    border-radius:50%;
+
+    background:#0d6efd;
+
+    color:#fff;
+
+    display:flex;
+
+    align-items:center;
+
+    justify-content:center;
+
+    font-size:20px;
+
+}
+
+.contact-item h4{
+
+    margin-bottom:5px;
+
+}
+
+.contact-form{
+
+    background:#fff;
+
+    border-radius:20px;
+
+    padding:35px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.10);
+
+}
+
+.contact-form h2{
+
+    color:#003f88;
+
+    margin-bottom:20px;
+
+}
+
+.contact-form input,
+.contact-form textarea{
+
+    width:100%;
+
+    padding:14px;
+
+    border:1px solid #ddd;
+
+    border-radius:10px;
+
+    margin-bottom:18px;
+
+    font-family:inherit;
+
+}
+
+.contact-form textarea{
+
+    height:150px;
+
+    resize:none;
+
+}
+
+.contact-form button{
+
+    background:#0d6efd;
+
+    color:#fff;
+
+    border:none;
+
+    padding:14px 30px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.contact-form button:hover{
+
+    background:#003f88;
+
+}
+
+.map{
+
+    margin-top:60px;
+
+}
+
+.map iframe{
+
+    width:100%;
+
+    height:450px;
+
+    border:none;
+
+    border-radius:20px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.1);
+
+}
+
+#infoPesan{
+
+    padding:12px;
+
+    border-radius:8px;
+
+    font-weight:600;
+
+}
+
+#simpan:disabled{
+
+    opacity:.7;
+
+    cursor:not-allowed;
+
+}
+
+@media(max-width:768px){
+
+.contact-wrapper{
+
+grid-template-columns:1fr;
+
+}
+
+.contact-section{
+    padding:40px 0;
+}
+
+.page-header h1{
+
+font-size:30px;
+
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+<div class="container nav">
+
+ <div class="logo">
+    <img id="logo-sekolah" src="" alt="Logo">
+        <div>
+        <h2 id="nama-brand"></h2>
+        <p id="motto-brand"></p>
+    </div>
+</div>
+
+<nav id="menu">
+    <a href="index.html">Beranda</a>
+    
+    <div class="dropdown">
+        <a href="#">Profil <i class="fa-solid fa-chevron-down"></i></a>
+
+        <ul class="dropdown-menu">
+            <li><a href="profil-sekolah.html">Profil Sekolah</a></li>
+            <li><a href="profil-layanan.html">Profil Layanan</a></li>
+            <li><a href="profil-video.html">Video Profil</a></li>
+        </ul>
+    </div>
+
+    <a href="identifikasi.html">Identifikasi</a>
+    <div class="dropdown">
+        <a href="#">Data Observasi <i class="fa-solid fa-chevron-down"></i></a>
+        <ul class="dropdown-menu">
+            <li><a href="observasi-guru.html">Observasi Guru</a></li>
+            <li><a href="observasi-ortu.html">Observasi Orang Tua</a></li>
+            <li><a href="grafik.html">Grafik Observasi</a></li>
+        </ul>
+    </div>
+
+    <a href="dokumentasi.html">Dokumentasi</a>
+    <a href="hubungi.html">Hubungi</a>
+</nav>
+
+<div id="toggle">
+<i class="fa-solid fa-bars"></i>
+</div>
+
+</div>
+</header>
+
+<section class="page-header" id="page-header">
+
+<div class="container">
+
+<h1>Hubungi Kami</h1>
+
+<p>Hubungi kami apabila memerlukan informasi lebih lanjut.</p>
+
+</div>
+
+</section>
+
+<section class="contact-section">
+
+<div class="container">
+
+<div class="contact-wrapper">
+
+<div class="contact-info">
+
+<h2>Informasi Sekolah</h2>
+
+<div class="contact-item">
+
+<i class="fas fa-school"></i>
+
+<div>
+
+<h4>Nama Sekolah</h4>
+
+<p id="footer-title2"></p>
+
+</div>
+
+</div>
+
+<div class="contact-item">
+
+<i class="fas fa-location-dot"></i>
+
+<div>
+
+<h4>Alamat</h4>
+
+<p id="footer-address2"></p>
+
+</div>
+
+</div>
+
+<div class="contact-item">
+
+<i class="fas fa-phone"></i>
+
+<div>
+
+<h4>Telepon</h4>
+
+<p id="telepon"></p>
+
+</div>
+
+</div>
+
+<div class="contact-item">
+
+<i class="fas fa-envelope"></i>
+
+<div>
+
+<h4>Email</h4>
+
+<p id="email"></p>
+
+</div>
+
+</div>
+
+<div class="contact-item">
+
+<i class="fas fa-clock"></i>
+
+<div>
+
+<h4>Jam Pelayanan</h4>
+
+<p>Senin - Jumat<br>07.30 - 15.30 WITA</p>
+
+</div>
+
+</div>
+
+</div>
+
+<div class="contact-form">
+
+<h2>Kirim Pesan</h2>
+
+<form id="contactForm">
+
+    <input type="text" id="nama" placeholder="Nama Lengkap" required>
+
+    <input type="email" id="emailInput" placeholder="Email" required>
+
+    <input type="text" id="subjek" placeholder="Subjek" required>
+
+    <textarea id="pesan" placeholder="Tulis pesan Anda..." required></textarea>
+
+    <button type="submit" id="simpan">
+
+        <i class="fas fa-paper-plane"></i>
+        <span id="btnText">Kirim Pesan</span>
+
+    </button>
+
+    <div id="infoPesan" style="display:none;margin-top:15px;"></div>
+
+</form>
+
+</div>
+
+</div>
+
+<div class="map">
+
+<iframe
+src="https://www.google.com/maps?q=Waru,sdn+006+waru+Penajam+Paser+Utara&output=embed"
+loading="lazy">
+</iframe>
+
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+    <div class="container">
+
+    <h2 id="footer-title"></h2>
+
+    <p id="footer-address"></p>
+
+    <div class="social">
+        <a id="facebook-link" href="#" target="_blank">
+            <i class="fab fa-facebook"></i>
+        </a>
+
+        <a id="instagram-link" href="#" target="_blank">
+            <i class="fab fa-instagram"></i>
+        </a>
+
+        <a id="youtube-link" href="#" target="_blank">
+            <i class="fab fa-youtube"></i>
+        </a>
+    </div>
+
+    <p class="copy" id="footer-copy"></p>
+
+    </div>
+
+ </footer>
+
+<script src="assets/js/script.js"></script>
+<script type="text/javascript">
+const API_KEY = "AIzaSyC_bF2r4x-qbv48Zcyg2dadlqGr5KPNG0M";
+const SHEET_ID = "1J3EldqNBHHIz5xr2JKWtQRE28AmUuPBZaK0L6hkqSeo";
+const WEB_APP = "https://script.google.com/macros/s/AKfycbxawE-eCdnOVNvfII5yOdRwhrk0trAjBfE-FkGTChx-86yqwFUXj7L8S_YD55FPkdVU/exec";
+
+let headers = [];
+let allRows = [];
+
+//=====================================
+// GOOGLE DRIVE
+//=====================================
+
+function driveImage(id){
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
+}
+
+function driveLogo(id){
+    return `https://lh3.googleusercontent.com/d/${id}=w200`;
+}
+
+//=====================================
+// NAVBAR & FOOTER
+//=====================================
+
+async function loadNavFooter(){
+
+    const url =
+    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:G20?key=${API_KEY}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const rows = data.values || [];
+
+    // ==========================
+    // LOGO
+    // ==========================
+
+    document.getElementById("logo-sekolah").src =
+        driveLogo(rows[2][1]);
+
+    document.getElementById("nama-brand").textContent =
+        rows[2][2] || "";
+
+    document.getElementById("motto-brand").textContent =
+        rows[2][3] || "";
+
+    document.getElementById("page-header").style.background = `
+        linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+        url(${driveImage(rows[2][4])}) center/cover no-repeat
+    `;
+
+    // ==========================
+    // FOOTER
+    // ==========================
+
+    document.getElementById("footer-title").textContent =
+        rows[5][1] || "";
+
+    document.getElementById("footer-address").textContent =
+        rows[5][2] || "";
+
+    document.getElementById("footer-title2").textContent =
+        rows[5][1] || "";
+
+    document.getElementById("footer-address2").textContent =
+        rows[5][2] || "";
+
+    document.getElementById("footer-copy").textContent =
+        rows[5][4] || "";
+
+    document.getElementById("telepon").textContent =
+        rows[5][5] || "";
+
+    document.getElementById("email").textContent =
+        rows[5][6] || "";
+
+    document.getElementById("facebook-link").href =
+        rows[6][1] || "#";
+
+    document.getElementById("instagram-link").href =
+        rows[6][2] || "#";
+
+    document.getElementById("youtube-link").href =
+        rows[6][4] || "#";
+   
+}
+
+document
+.getElementById("contactForm")
+.addEventListener("submit", async function(e){
+
+    e.preventDefault();
+
+    const btn =
+    document.getElementById("simpan");
+
+    const btnText =
+    document.getElementById("btnText");
+
+    const info =
+    document.getElementById("infoPesan");
+
+    btn.disabled = true;
+
+    btnText.textContent = "Mengirim...";
+
+    info.style.display = "none";
+
+    const data = {
+
+        nama:
+        document.getElementById("nama").value,
+
+        email:
+        document.getElementById("emailInput").value,
+
+        subjek:
+        document.getElementById("subjek").value,
+
+        pesan:
+        document.getElementById("pesan").value
+
+    };
+
+    try{
+
+        const res = await fetch(WEB_APP,{
+
+            method:"POST",
+
+            body:JSON.stringify(data)
+
+        });
+
+        const hasil = await res.json();
+
+        if(hasil.status=="success"){
+
+            info.style.display="block";
+
+            info.style.color="#198754";
+
+            info.innerHTML=
+            "<b>✓ Pesan berhasil dikirim.</b>";
+
+            document
+            .getElementById("contactForm")
+            .reset();
+
+            setTimeout(()=>{
+
+                info.style.display="none";
+
+            },5000);
+
+        }
+
+        else{
+
+            info.style.display="block";
+
+            info.style.color="red";
+
+            info.innerHTML=
+            "Gagal mengirim pesan.";
+
+        }
+
+    }
+
+    catch(err){
+
+        info.style.display="block";
+
+        info.style.color="red";
+
+        info.innerHTML=
+        "Terjadi kesalahan koneksi.";
+
+    }
+
+    btn.disabled=false;
+
+    btnText.textContent="Kirim Pesan";
+
+});
+
+document.addEventListener("DOMContentLoaded", async ()=>{
+
+    await loadNavFooter();
+
+});
+
+</script>
+</body>
+
+</html>

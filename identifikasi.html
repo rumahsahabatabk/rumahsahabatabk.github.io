@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Identifikasi</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        <style type="text/css">
+        /* ===========================
+   PAGE HEADER
+=========================== */
+
+.page-header{
+    margin-top:83px;
+    padding:110px 20px;
+    text-align:center;
+    color:#fff;
+}
+
+.page-header h1{
+    font-size:42px;
+    margin-bottom:15px;
+}
+
+.page-header p{
+    font-size:18px;
+    opacity:.95;
+}
+
+
+.identifikasi{
+    padding:50px 0;
+}
+
+.table-title{
+    margin:40px 0 15px;
+    color:#003f88;
+    font-size:24px;
+    font-weight:600;
+}
+
+.container h3{
+    margin-bottom: 20px;
+}
+
+.table-responsive{
+    overflow-x:auto;
+}
+
+.custom-table{
+    width:100%;
+    border-collapse:separate;
+    border-spacing:0;
+    background:#fff;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+}
+
+.custom-table thead{
+    background:linear-gradient(135deg,#0d6efd,#003f88);
+}
+
+.custom-table thead th{
+    color:#fff;
+    padding:16px;
+    font-size:15px;
+    font-weight:600;
+    text-align:left;
+}
+
+.custom-table tbody td{
+    padding:16px;
+    border-bottom:1px solid #eef2f7;
+    color:#555;
+    vertical-align:middle;
+}
+
+.custom-table tbody tr:last-child td{
+    border-bottom:none;
+}
+
+.custom-table tbody tr{
+    transition:.25s;
+}
+
+.custom-table tbody tr:hover{
+    background:#f8fbff;
+}
+
+.custom-table tbody td:first-child{
+    width:70px;
+    text-align:center;
+    font-weight:600;
+    color:#003f88;
+}
+
+.custom-table tbody td:last-child{
+    text-align:center;
+}
+
+.btn-link{
+    display:inline-flex;
+    align-items:center;
+    gap:8px;
+    padding:10px 18px;
+    background:#0d6efd;
+    color:#fff;
+    text-decoration:none;
+    border-radius:8px;
+    font-size:14px;
+    font-weight:500;
+    transition:.3s;
+}
+
+.btn-link:hover{
+    background:#003f88;
+    transform:translateY(-2px);
+    box-shadow:0 8px 18px rgba(13,110,253,.25);
+}
+
+.btn-link i{
+    font-size:14px;
+}
+
+.section-space{
+    margin-top:60px;
+}
+
+@media(max-width:768px){
+
+    .custom-table thead th,
+    .custom-table tbody td{
+        padding:12px;
+        font-size:14px;
+    }
+
+    .btn-link{
+        padding:8px 14px;
+        font-size:13px;
+    }
+    .title h2{
+        font-size: 20px;
+    }
+
+.identifikasi{
+    padding:40px 0;
+}
+
+.page-header{
+
+    padding:80px 20px;
+
+}
+
+.page-header h1{
+
+    font-size:26px;
+
+}
+
+}
+</style>
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header>
+
+        <div class="container nav">
+
+             <div class="logo">
+                <img id="logo-sekolah" src="" alt="Logo">
+                <div>
+                    <h2 id="nama-brand"></h2>
+                    <p id="motto-brand"></p>
+                </div>
+            </div>
+
+            <nav id="menu">
+                <a href="index.html">Beranda</a>
+                
+                <div class="dropdown">
+                    <a href="#">Profil <i class="fa-solid fa-chevron-down"></i></a>
+
+                    <ul class="dropdown-menu">
+                        <li><a href="profil-sekolah.html">Profil Sekolah</a></li>
+                        <li><a href="profil-layanan.html">Profil Layanan</a></li>
+                        <li><a href="profil-video.html">Video Profil</a></li>
+                    </ul>
+                </div>
+
+                <a href="identifikasi.html">Identifikasi</a>
+                <div class="dropdown">
+                    <a href="#">Data Observasi <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="observasi-guru.html">Observasi Guru</a></li>
+                        <li><a href="observasi-ortu.html">Observasi Orang Tua</a></li>
+                        <li><a href="grafik.html">Grafik Observasi</a></li>
+                    </ul>
+                </div>
+
+                <a href="dokumentasi.html">Dokumentasi</a>
+                <a href="hubungi.html">Hubungi</a>
+            </nav>
+
+            <div id="toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- PAGE HEADER -->
+
+    <section class="page-header" id="page-header">
+
+            <div class="container">
+
+                <h1 id="page-title"></h1>
+
+                <p id="page-subtitle"></p>
+
+            </div>
+
+    </section>
+
+    <section class="identifikasi">
+    <div class="container">
+
+        <div class="title">
+            <h2 id="contentTitle"></h2>
+            <p id="contentSubtitle"></p>
+        </div>
+
+        <!-- TABEL FORM -->
+        <h3>Form Asesmen Online</h3>
+        <div class="table-responsive nowrap">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th width="60">No</th>
+                        <th>Deskripsi</th>
+                        <th width="180" style="text-align: center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="formTableBody"></tbody>
+            </table>
+        </div>
+
+        <br><br>
+
+        <!-- TABEL PDF -->
+        <h3>Form Asesmen Manual</h3>
+
+        <div class="table-responsive">
+            <table class="custom-table">
+                <thead>
+                    <tr>
+                        <th width="60">No</th>
+                        <th>Nama Dokumen</th>
+                        <th width="180" style="text-align: center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="pdfTableBody"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+    
+<!-- FOOTER -->
+
+<footer>
+<div class="container">
+
+<h2 id="footer-title"></h2>
+
+<p id="footer-address"></p>
+
+<div class="social">
+    <a id="facebook-link" href="#" target="_blank">
+        <i class="fab fa-facebook"></i>
+    </a>
+
+    <a id="instagram-link" href="#" target="_blank">
+        <i class="fab fa-instagram"></i>
+    </a>
+
+    <a id="youtube-link" href="#" target="_blank">
+        <i class="fab fa-youtube"></i>
+    </a>
+</div>
+
+<p class="copy" id="footer-copy"></p>
+
+</div>
+
+</footer>
+
+<script src="assets/js/script.js"></script>
+<script type="text/javascript">
+const API_KEY = "AIzaSyC_bF2r4x-qbv48Zcyg2dadlqGr5KPNG0M";
+const SHEET_ID = "1J3EldqNBHHIz5xr2JKWtQRE28AmUuPBZaK0L6hkqSeo";
+
+function driveImage(id){
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
+}
+
+function driveLogo(id){
+    return `https://lh3.googleusercontent.com/d/${id}=w200`;
+}
+
+// ===============================
+// NAVBAR & FOOTER
+// ===============================
+
+async function loadNavFooter(){
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:E20?key=${API_KEY}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const rows = data.values || [];
+
+    // Navbar
+    document.getElementById("logo-sekolah").src = driveLogo(rows[2][1]);
+    document.getElementById("nama-brand").textContent = rows[2][2];
+    document.getElementById("motto-brand").textContent = rows[2][3];
+
+    document.getElementById("page-header").style.background = `
+        linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+        url(${driveImage(rows[2][4])}) center/cover no-repeat
+    `;
+
+    // Footer
+    document.getElementById("footer-title").textContent = rows[5][1];
+    document.getElementById("footer-address").textContent = rows[5][2];
+    document.getElementById("footer-copy").textContent = rows[5][4];
+
+    document.getElementById("facebook-link").href = rows[6][1];
+    document.getElementById("instagram-link").href = rows[6][2];
+    document.getElementById("youtube-link").href = rows[6][4];
+
+}
+
+// ===============================
+// LOAD IDENTIFIKASI
+// ===============================
+
+async function loadIdentifikasi(){
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Identifikasi!A1:C100?key=${API_KEY}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const rows = data.values || [];
+
+    // Header halaman
+    document.getElementById("page-title").textContent = rows[0]?.[2] || "";
+    document.getElementById("page-subtitle").textContent = rows[1]?.[2] || "";
+
+    // Judul konten
+    document.getElementById("contentTitle").textContent = rows[2]?.[2] || "";
+    document.getElementById("contentSubtitle").textContent = rows[3]?.[2] || "";
+
+    // ==========================
+    // FORM APLIKASI
+    // ==========================
+
+    const formBody = document.getElementById("formTableBody");
+    formBody.innerHTML = "";
+
+    for(let i=5;i<11;i++){
+
+        const row = rows[i];
+
+        if(!row || !row[1]) continue;
+
+        formBody.innerHTML += `
+            <tr>
+                <td>${row[0] || ""}</td>
+                <td>${row[1] || ""}</td>
+                <td style="text-align:center">
+                    <a href="${row[2]}" target="_blank" class="btn-link">
+                        Buka Form
+                    </a>
+                </td>
+            </tr>
+        `;
+    }
+
+    // ==========================
+    // DOKUMEN PDF
+    // ==========================
+
+    const pdfBody = document.getElementById("pdfTableBody");
+    pdfBody.innerHTML = "";
+
+    for(let i=12;i<100;i++){
+
+        const row = rows[i];
+
+        if(!row || !row[1]) continue;
+
+        pdfBody.innerHTML += `
+            <tr>
+                <td>${row[0] || ""}</td>
+                <td>${row[1] || ""}</td>
+                <td style="text-align:center">
+                    <a href="${row[2]}" target="_blank" class="btn-link">
+                        Download
+                    </a>
+                </td>
+            </tr>
+        `;
+    }
+
+}
+
+// ===============================
+// INIT
+// ===============================
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    await loadNavFooter();
+
+    await loadIdentifikasi();
+
+});
+</script>
+
+</body>
+
+</html>

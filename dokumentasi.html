@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Dokumentasi</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+        <style type="text/css">
+        /* ===========================
+   PAGE HEADER
+=========================== */
+
+.page-header{
+    margin-top:83px;
+    padding:110px 20px;
+    text-align:center;
+    color:#fff;
+}
+
+.page-header h1{
+    font-size:42px;
+    margin-bottom:15px;
+}
+
+.page-header p{
+    font-size:18px;
+    opacity:.95;
+}
+
+/* ===========================
+   GALLERY
+=========================== */
+
+.gallery{
+    padding:50px 0;
+}
+
+.album-grid{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:30px;
+
+}
+
+/* ===========================
+   ALBUM CARD
+=========================== */
+
+.album-card{
+
+    background:#fff;
+
+    border-radius:18px;
+
+    overflow:hidden;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    box-shadow:0 8px 20px rgba(0,0,0,.10);
+
+}
+
+.album-card:hover{
+
+    transform:translateY(-8px);
+
+    box-shadow:0 20px 35px rgba(0,0,0,.18);
+
+}
+
+.album-card img{
+
+    width:100%;
+
+    height:230px;
+
+    object-fit:cover;
+
+    display:block;
+
+}
+
+.album-card h3{
+
+    padding:18px;
+
+    text-align:center;
+
+    color:#003f88;
+
+    font-size:16px;
+
+}
+
+/* ===========================
+   PAGINATION
+=========================== */
+
+.pagination{
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-top:50px;
+
+    flex-wrap:wrap;
+
+}
+
+.pagination button{
+
+    min-width:45px;
+
+    height:45px;
+
+    border:none;
+
+    border-radius:10px;
+
+    background:#fff;
+
+    cursor:pointer;
+
+    font-size:15px;
+
+    transition:.3s;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.10);
+
+}
+
+.pagination button:hover{
+
+    background:#0d6efd;
+
+    color:#fff;
+
+}
+
+.pagination button.active{
+
+    background:#0d6efd;
+
+    color:#fff;
+
+}
+
+.pagination button:disabled{
+
+    opacity:.4;
+
+    cursor:not-allowed;
+
+}
+
+/* ===========================
+   POPUP
+=========================== */
+
+.popup{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.8);
+
+    z-index:9999;
+
+    overflow:auto;
+
+    padding:50px 20px;
+
+}
+
+.popup-content{
+
+    background:#fff;
+
+    max-width:1100px;
+
+    margin:auto;
+
+    border-radius:20px;
+
+    padding:30px;
+
+    position:relative;
+
+}
+
+.close{
+
+    position:absolute;
+
+    right:20px;
+
+    top:15px;
+
+    font-size:36px;
+
+    cursor:pointer;
+
+    color:#444;
+
+}
+
+.close:hover{
+
+    color:red;
+
+}
+
+#popupTitle{
+
+    color:#003f88;
+
+    margin-bottom:25px;
+
+}
+
+/* ===========================
+   POPUP GALLERY
+=========================== */
+
+#popupGallery{
+
+    display:grid;
+
+    grid-template-columns:repeat(3,1fr);
+
+    gap:20px;
+
+}
+
+#popupGallery img{
+
+    width:100%;
+
+    border-radius:12px;
+
+    cursor:pointer;
+
+    transition:.3s;
+
+    box-shadow:0 5px 15px rgba(0,0,0,.15);
+
+}
+
+#popupGallery img:hover{
+
+    transform:scale(1.04);
+
+}
+
+/* ===========================
+   LIGHTBOX
+=========================== */
+
+.lightbox{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    background:rgba(0,0,0,.92);
+
+    z-index:10000;
+
+    justify-content:center;
+
+    align-items:center;
+
+}
+
+.lightbox img{
+
+    max-width:90%;
+
+    max-height:90%;
+
+    border-radius:12px;
+
+    box-shadow:0 15px 40px rgba(0,0,0,.4);
+
+}
+
+.lightbox-close{
+
+    position:absolute;
+
+    top:25px;
+
+    right:35px;
+
+    color:#fff;
+
+    font-size:45px;
+
+    cursor:pointer;
+
+}
+
+#popupTitle{
+    font-size: 18px;
+}
+
+/* ===========================
+   RESPONSIVE
+=========================== */
+
+@media(max-width:992px){
+
+.album-grid{
+
+    grid-template-columns:repeat(2,1fr);
+
+}
+
+#popupGallery{
+
+    grid-template-columns:repeat(2,1fr);
+
+}
+
+}
+
+@media(max-width:768px){
+
+.page-header{
+
+    padding:80px 20px;
+
+}
+
+.gallery{
+    padding:40px 0;
+}
+
+.page-header h1{
+
+    font-size:26px;
+
+}
+
+.album-grid{
+
+    grid-template-columns:1fr;
+
+}
+
+#popupGallery{
+
+    grid-template-columns:1fr;
+
+}
+
+.album-card img{
+
+    height:220px;
+
+}
+
+.popup-content{
+
+    padding:20px;
+
+}
+
+.title h2{
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+}
+        </style>
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header>
+
+        <div class="container nav">
+
+             <div class="logo">
+                <img id="logo-sekolah" src="" alt="Logo">
+                <div>
+                    <h2 id="nama-brand"></h2>
+                    <p id="motto-brand"></p>
+                </div>
+            </div>
+
+            <nav id="menu">
+                <a href="index.html">Beranda</a>
+                
+                <div class="dropdown">
+                    <a href="#">Profil <i class="fa-solid fa-chevron-down"></i></a>
+
+                    <ul class="dropdown-menu">
+                        <li><a href="profil-sekolah.html">Profil Sekolah</a></li>
+                        <li><a href="profil-layanan.html">Profil Layanan</a></li>
+                        <li><a href="profil-video.html">Video Profil</a></li>
+                    </ul>
+                </div>
+
+                <a href="identifikasi.html">Identifikasi</a>
+
+                <div class="dropdown">
+                    <a href="#">Data Observasi <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="observasi-guru.html">Observasi Guru</a></li>
+                        <li><a href="observasi-ortu.html">Observasi Orang Tua</a></li>
+                        <li><a href="grafik.html">Grafik Observasi</a></li>
+                    </ul>
+                </div>
+
+                <a href="dokumentasi.html">Dokumentasi</a>
+                <a href="hubungi.html">Hubungi</a>
+            </nav>
+
+            <div id="toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- PAGE HEADER -->
+
+    <section class="page-header" id="page-header">
+
+            <div class="container">
+
+                <h1 id="pageTitle"></h1>
+
+                <p id="pageSubtitle"></p>
+
+            </div>
+
+        </section>
+
+        <section class="gallery">
+
+            <div class="container">
+
+                <div class="title">
+
+                    <h2 id="contentTitle"></h2>
+
+                    <p id="contentSubtitle"></p>
+
+                </div>
+
+                <div class="album-grid" id="albumGrid"></div>
+
+                <div class="pagination" id="pagination"></div>
+
+            </div>
+
+        </section>
+
+    <!-- POPUP -->
+
+    <div class="popup" id="popup">
+
+        <div class="popup-content">
+
+            <span class="close" id="closePopup">&times;</span>
+
+            <h2 id="popupTitle"></h2>
+
+            <div id="popupGallery"></div>
+
+        </div>
+
+    </div>
+
+    <!-- LIGHTBOX -->
+
+    <div class="lightbox" id="lightbox">
+
+        <span class="lightbox-close" id="closeLightbox">&times;</span>
+
+        <img id="lightboxImage" src="" alt="">
+
+    </div>
+
+    <!-- FOOTER -->
+
+<footer>
+
+<div class="container">
+
+<h2 id="footer-title"></h2>
+
+<p id="footer-address"></p>
+
+<div class="social">
+    <a id="facebook-link" href="#" target="_blank">
+        <i class="fab fa-facebook"></i>
+    </a>
+
+    <a id="instagram-link" href="#" target="_blank">
+        <i class="fab fa-instagram"></i>
+    </a>
+
+    <a id="youtube-link" href="#" target="_blank">
+        <i class="fab fa-youtube"></i>
+    </a>
+</div>
+
+<p class="copy" id="footer-copy"></p>
+
+</div>
+
+</footer>
+
+<script src="assets/js/script.js"></script>
+<script type="text/javascript">
+const API_KEY = "AIzaSyC_bF2r4x-qbv48Zcyg2dadlqGr5KPNG0M";
+const SHEET_ID = "1J3EldqNBHHIz5xr2JKWtQRE28AmUuPBZaK0L6hkqSeo";
+const RANGE = "Dokumentasi!A6:K";
+
+const pagination = document.getElementById("pagination");
+
+const perPage = 6;
+let currentPage = 1;
+let allAlbums = [];
+
+const albumGrid = document.getElementById("albumGrid");
+const popup = document.getElementById("popup");
+const popupTitle = document.getElementById("popupTitle");
+const popupGallery = document.getElementById("popupGallery");
+
+const lightbox = document.getElementById("lightbox");
+const lightboxImage = document.getElementById("lightboxImage");
+
+document.getElementById("closePopup").onclick = () => {
+    popup.style.display = "none";
+};
+
+document.getElementById("closeLightbox").onclick = () => {
+    lightbox.style.display = "none";
+};
+
+popup.onclick = function(e){
+    if(e.target==popup){
+        popup.style.display="none";
+    }
+}
+
+lightbox.onclick = function(e){
+    if(e.target==lightbox){
+        lightbox.style.display="none";
+    }
+}
+
+
+function driveLogo(id){
+    return `https://lh3.googleusercontent.com/d/${id}=w200`;
+}
+
+function driveImage(id){
+    return `https://lh3.googleusercontent.com/d/${id}=w2000`;
+}
+
+function driveImages(id){
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
+}
+
+
+async function loadNavFooter(){
+
+    const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:E20?key=${API_KEY}`;
+
+    const res=await fetch(url);
+
+    const data=await res.json();
+
+    const rows=data.values || [];
+
+    // ========= NAVBAR =========
+
+    const logoId=rows[2][1];
+    const brand=rows[2][2];
+    const motto=rows[2][3];
+    const bgId=rows[2][4];
+
+    document.getElementById("logo-sekolah").src = driveImage(logoId);
+
+    document.getElementById("nama-brand").textContent=brand;
+
+    document.getElementById("motto-brand").textContent=motto;
+
+    document.getElementById("page-header").style.background=`
+        linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+        url(${driveImages(bgId)}) center/cover no-repeat
+    `;
+
+    // ========= FOOTER =========
+
+    document.getElementById("footer-title").textContent=rows[5][1];
+
+    document.getElementById("footer-address").textContent=rows[5][2];
+
+    document.getElementById("footer-copy").textContent=rows[5][4];
+
+    document.getElementById("facebook-link").href=rows[6][1];
+
+    document.getElementById("instagram-link").href=rows[6][2];
+
+    document.getElementById("youtube-link").href=rows[6][4];
+
+}
+
+async function loadHeader() {
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Dokumentasi!A1:C4?key=${API_KEY}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const rows = data.values || [];
+
+    const obj = {};
+
+    rows.forEach(r => {
+        obj[r[0]] = r[2] || "";
+    });
+
+    document.querySelector(".page-header h1").textContent =
+        obj["Judul Halaman"] || "";
+
+    document.querySelector(".page-header p").textContent =
+        obj["Sub Judul Halaman"] || "";
+
+    document.querySelector(".gallery .title h2").textContent =
+        obj["Judul Konten"] || "";
+
+    document.querySelector(".gallery .title p").textContent =
+        obj["Sub Judul Konten"] || "";
+}
+
+async function loadAlbum() {
+
+    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    allAlbums = data.values || [];
+
+    renderAlbums();
+
+}
+
+
+function renderAlbums() {
+
+    albumGrid.innerHTML = "";
+
+    const start = (currentPage - 1) * perPage;
+    const end = start + perPage;
+
+    const currentAlbums = allAlbums.slice(start, end);
+
+    currentAlbums.forEach(row => {
+
+        const title = row[1] || "";
+
+        const images = [];
+
+        for (let i = 2; i < row.length; i++) {
+
+            const id = (row[i] || "").trim();
+
+            if (!id) continue;
+
+            images.push(
+                `https://drive.google.com/thumbnail?id=${id}&sz=w1200`
+            );
+
+        }
+
+        if (images.length == 0) return;
+
+        const card = document.createElement("div");
+
+        card.className = "album-card";
+
+        card.innerHTML = `
+            <img src="${images[0]}">
+            <h3>${title}</h3>
+        `;
+
+        card.onclick = function () {
+
+            popupTitle.textContent = title;
+
+            popupGallery.innerHTML = "";
+
+            images.forEach(img => {
+
+                popupGallery.innerHTML += `
+                    <img src="${img}" onclick="showImage('${img}')">
+                `;
+
+            });
+
+            popup.style.display = "block";
+
+        };
+
+        albumGrid.appendChild(card);
+
+    });
+
+    renderPagination();
+
+}
+
+
+function renderPagination() {
+
+    pagination.innerHTML = "";
+
+    const totalPages = Math.ceil(allAlbums.length / perPage);
+
+    if (totalPages <= 1) {
+        pagination.style.display = "none";
+        return;
+    }
+
+    pagination.style.display = "flex";
+
+    // ===========================
+    // PREV
+    // ===========================
+
+    const prev = document.createElement("button");
+    prev.innerHTML = "&laquo; Prev";
+    prev.disabled = currentPage === 1;
+
+    prev.onclick = () => {
+        if (currentPage > 1) {
+            currentPage--;
+            renderAlbums();
+        }
+    };
+
+    pagination.appendChild(prev);
+
+    // ===========================
+    // NOMOR HALAMAN (maksimal 3)
+    // ===========================
+
+    let startPage = Math.max(1, currentPage - 1);
+    let endPage = Math.min(totalPages, startPage + 2);
+
+    // supaya selalu tampil 3 tombol jika memungkinkan
+    if (endPage - startPage < 2) {
+        startPage = Math.max(1, endPage - 2);
+    }
+
+    for (let i = startPage; i <= endPage; i++) {
+
+        const btn = document.createElement("button");
+
+        btn.textContent = i;
+
+        if (i === currentPage) {
+            btn.classList.add("active");
+        }
+
+        btn.onclick = () => {
+            currentPage = i;
+            renderAlbums();
+        };
+
+        pagination.appendChild(btn);
+    }
+
+    // ===========================
+    // NEXT
+    // ===========================
+
+    const next = document.createElement("button");
+    next.innerHTML = "Next &raquo;";
+    next.disabled = currentPage === totalPages;
+
+    next.onclick = () => {
+        if (currentPage < totalPages) {
+            currentPage++;
+            renderAlbums();
+        }
+    };
+
+    pagination.appendChild(next);
+
+}
+
+function showImage(src){
+
+    lightbox.style.display="flex";
+    lightboxImage.src=src;
+
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+    await loadNavFooter();
+    await loadHeader();
+    await loadAlbum();
+});
+</script>
+
+</body>
+
+</html>

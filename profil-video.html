@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Video Profil</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        .page-header {
+            margin-top: 83px;
+            padding: 100px 0;
+            color: #fff;
+            text-align: center;
+        }
+
+        .page-header h1 {
+            font-size: 42px;
+            margin-bottom: 15px;
+        }
+
+        .video-section {
+            padding: 50px 0;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 35px;
+        }
+
+        .video-card {
+            background: #fff;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .12);
+        }
+
+        .video-card iframe {
+            width:100%;
+            height:320px;
+            display:block;
+            border:0;
+        }
+
+        .video-info {
+            padding: 20px;
+        }
+
+        .video-info h3 {
+            color: #003f88;
+            margin-bottom: 10px;
+        }
+
+        .video-info p {
+            color: #666;
+            line-height: 1.8;
+        }
+
+        @media(max-width:768px) {
+
+            .page-header h1 {
+                font-size: 26px;
+            }
+
+            .video-section {
+                padding: 40px 0;
+            }
+
+            .video-grid {
+                grid-template-columns: 1fr;
+            }
+
+        }
+    </style>
+
+</head>
+
+<body>
+
+    <header>
+
+        <div class="container nav">
+
+            <div class="logo">
+                <img id="logo-sekolah" src="" alt="Logo">
+                <div>
+                    <h2 id="nama-brand"></h2>
+                    <p id="motto-brand"></p>
+                </div>
+            </div>
+
+            <nav id="menu">
+                <a href="index.html">Beranda</a>
+                
+                <div class="dropdown">
+                    <a href="#">Profil <i class="fa-solid fa-chevron-down"></i></a>
+
+                    <ul class="dropdown-menu">
+                        <li><a href="profil-sekolah.html">Profil Sekolah</a></li>
+                        <li><a href="profil-layanan.html">Profil Layanan</a></li>
+                        <li><a href="profil-video.html">Video Profil</a></li>
+                    </ul>
+                </div>
+
+                <a href="identifikasi.html">Identifikasi</a>
+                <div class="dropdown">
+                    <a href="#">Data Observasi <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="observasi-guru.html">Observasi Guru</a></li>
+                        <li><a href="observasi-ortu.html">Observasi Orang Tua</a></li>
+                        <li><a href="grafik.html">Grafik Observasi</a></li>
+                    </ul>
+                </div>
+
+                <a href="dokumentasi.html">Dokumentasi</a>
+                <a href="hubungi.html">Hubungi</a>
+            </nav>
+
+            <div id="toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+
+        </div>
+
+    </header>
+
+    <section class="page-header" id="page-header">
+       <div class="container">
+        <h1 id="pageTitle"></h1>
+        <p id="pageSubtitle"></p>
+      </div>
+    </section>
+
+
+    <section class="video-section">
+
+        <div class="container">
+
+            <div class="title">
+                <h2 id="judul"></h2>
+                <p id="subjudul"></p>
+            </div>
+
+            <div class="video-grid" id="videoGrid"></div>
+
+        </div>
+
+    </section>
+
+    <footer>
+
+    <div class="container">
+
+    <h2 id="footer-title"></h2>
+
+    <p id="footer-address"></p>
+
+    <div class="social">
+        <a id="facebook-link" href="#" target="_blank">
+            <i class="fab fa-facebook"></i>
+        </a>
+
+        <a id="instagram-link" href="#" target="_blank">
+            <i class="fab fa-instagram"></i>
+        </a>
+
+        <a id="youtube-link" href="#" target="_blank">
+            <i class="fab fa-youtube"></i>
+        </a>
+    </div>
+
+    <p class="copy" id="footer-copy"></p>
+
+    </div>
+
+    </footer>
+
+<script src="assets/js/script.js"></script>
+<script type="text/javascript">
+const SHEET_ID = "1J3EldqNBHHIz5xr2JKWtQRE28AmUuPBZaK0L6hkqSeo";
+const API_KEY  = "AIzaSyC_bF2r4x-qbv48Zcyg2dadlqGr5KPNG0M";
+
+function driveLogo(id){
+    return `https://lh3.googleusercontent.com/d/${id}=w200`;
+}
+
+function driveImage(id){
+    return `https://lh3.googleusercontent.com/d/${id}=w2000`;
+}
+
+function driveImages(id){
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
+}
+
+
+async function loadNavFooter(){
+
+    const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:E20?key=${API_KEY}`;
+
+    const res=await fetch(url);
+
+    const data=await res.json();
+
+    const rows=data.values || [];
+
+    // ========= NAVBAR =========
+
+    const logoId=rows[2][1];
+    const brand=rows[2][2];
+    const motto=rows[2][3];
+    const bgId=rows[2][4];
+
+    document.getElementById("logo-sekolah").src = driveImage(logoId);
+
+    document.getElementById("nama-brand").textContent=brand;
+
+    document.getElementById("motto-brand").textContent=motto;
+
+    document.getElementById("page-header").style.background=`
+        linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+        url(${driveImages(bgId)}) center/cover no-repeat
+    `;
+
+    // ========= FOOTER =========
+
+    document.getElementById("footer-title").textContent=rows[5][1];
+
+    document.getElementById("footer-address").textContent=rows[5][2];
+
+    document.getElementById("footer-copy").textContent=rows[5][4];
+
+    document.getElementById("facebook-link").href=rows[6][1];
+
+    document.getElementById("instagram-link").href=rows[6][2];
+
+    document.getElementById("youtube-link").href=rows[6][4];
+
+}
+
+/* ===========================
+   HEADER (ROW 1-4)
+=========================== */
+
+async function loadHeader(){
+
+    const url =
+    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Profil_Video!A1:C4?key=${API_KEY}`;
+
+    const res = await fetch(url);
+    const data = await res.json();
+
+    const rows = data.values || [];
+
+    rows.forEach(row=>{
+
+        const label = row[0] || "";
+        const isi   = row[2] || "";
+
+        switch(label){
+
+            case "Judul Halaman":
+                document.getElementById("pageTitle").textContent = isi;
+                break;
+
+            case "Sub Judul Halaman":
+                document.getElementById("pageSubtitle").textContent = isi;
+                break;
+
+            case "Judul Konten":
+                document.getElementById("judul").textContent = isi;
+                break;
+
+            case "Sub Judul Konten":
+                document.getElementById("subjudul").textContent = isi;
+                break;
+
+        }
+
+    });
+
+}
+
+
+/* ===========================
+   AMBIL ID VIDEO YOUTUBE
+=========================== */
+
+function getYoutubeId(value){
+
+    value = (value || "").trim();
+
+    if(!value) return "";
+
+    try{
+
+        const url = new URL(value);
+
+        if(
+            url.hostname==="youtube.com" ||
+            url.hostname==="www.youtube.com"
+        ){
+
+            return url.searchParams.get("v") || "";
+
+        }
+
+        if(url.hostname==="youtu.be"){
+
+            return url.pathname.replace("/","");
+
+        }
+
+    }catch(e){
+
+        // Jika langsung ID video
+        return value;
+
+    }
+
+    return value;
+
+}
+
+
+/* ===========================
+   VIDEO (ROW 6 KE BAWAH)
+=========================== */
+
+async function loadVideo(){
+
+    try{
+
+        const url =
+        `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Profil_Video!A6:D?key=${API_KEY}`;
+
+        const response = await fetch(url);
+        const data = await response.json();
+
+        const rows = data.values || [];
+
+        const grid = document.getElementById("videoGrid");
+        grid.innerHTML = "";
+
+        rows.forEach(row=>{
+
+            const videoInput = row[1] || "";
+            const judul      = row[2] || "";
+            const deskripsi  = row[3] || "";
+
+            if(!videoInput) return;
+
+            const videoId = getYoutubeId(videoInput);
+
+            if(!/^[A-Za-z0-9_-]{11}$/.test(videoId))
+                return;
+
+            grid.innerHTML += `
+                <div class="video-card">
+
+                    <iframe
+                        src="https://www.youtube.com/embed/${videoId}?rel=0"
+                        title="${judul}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                        allowfullscreen>
+                    </iframe>
+
+                    <div class="video-info">
+                        <h3>${judul}</h3>
+                        <p>${deskripsi}</p>
+                    </div>
+
+                </div>
+            `;
+
+        });
+
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadNavFooter();
+    loadHeader();
+    loadVideo();
+});
+
+</script>
+</body>
+</html>

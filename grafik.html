@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Grafik</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <style type="text/css">
+        /* ===========================
+   PAGE HEADER
+=========================== */
+
+.page-header{
+    margin-top:83px;
+    padding:110px 20px;
+    text-align:center;
+    color:#fff;
+}
+
+.page-header h1{
+    font-size:42px;
+    margin-bottom:15px;
+}
+
+.page-header p{
+    font-size:18px;
+    opacity:.95;
+}
+
+
+.identifikasi{
+    padding:60px 0;
+}
+
+.container h3{
+    margin-bottom: 20px;
+}
+
+.grafik-section{
+    padding:50px 0;
+}
+
+
+.filter-box{
+
+    background:#fff;
+    padding:25px;
+    border-radius:18px;
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+    margin-bottom:30px;
+
+}
+
+
+.filter-box label{
+
+    display:block;
+    margin-bottom:10px;
+    font-weight:600;
+    color:#003f88;
+
+}
+
+
+.filter-box select{
+
+    width:100%;
+    padding:12px 15px;
+    border-radius:10px;
+    border:1px solid #ddd;
+    font-size:15px;
+
+}
+
+.chart-box{
+
+    width:100%;
+
+    height:380px;
+
+    background:#fff;
+
+    padding:20px;
+
+    border-radius:15px;
+
+    box-shadow:0 10px 25px rgba(0,0,0,.08);
+
+}
+
+.student-info{
+
+    background:#f8fbff;
+    padding:20px;
+    border-radius:15px;
+    margin-bottom:30px;
+    color:#555;
+
+}
+
+
+.chart-card{
+    background:#fff;
+    padding:30px;
+    border-radius:20px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    overflow:auto;
+}
+
+.chart-card canvas{
+    width:100% !important;
+    min-height:2800px;
+}
+
+.item-list{
+    display: block;
+    text-align: left;
+    margin: 6px 0;
+    font-size: 15px;
+    line-height: 1.6;
+}
+
+#perilakuBelajar,
+#rekomendasiGuru{
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.card-header{
+    text-align: left;
+}
+
+@media(max-width:768px){
+
+    .chart-card{
+        padding:15px;
+    }
+
+    .custom-table thead th,
+    .custom-table tbody td{
+        padding:12px;
+        font-size:14px;
+    }
+
+    .btn-link{
+        padding:8px 14px;
+        font-size:13px;
+    }
+    .title h2{
+        font-size: 20px;
+    }
+
+.grafik-section{
+    padding:40px 0;
+}
+
+.page-header{
+
+    padding:80px 20px;
+
+}
+
+.page-header h1{
+
+    font-size:26px;
+
+}
+
+}
+</style>
+
+</head>
+
+<body>
+
+    <!-- HEADER -->
+
+    <header>
+
+        <div class="container nav">
+
+             <div class="logo">
+                <img id="logo-sekolah" src="" alt="Logo">
+                <div>
+                    <h2 id="nama-brand"></h2>
+                    <p id="motto-brand"></p>
+                </div>
+            </div>
+
+            <nav id="menu">
+                <a href="index.html">Beranda</a>
+                
+                <div class="dropdown">
+                    <a href="#">Profil <i class="fa-solid fa-chevron-down"></i></a>
+
+                    <ul class="dropdown-menu">
+                        <li><a href="profil-sekolah.html">Profil Sekolah</a></li>
+                        <li><a href="profil-layanan.html">Profil Layanan</a></li>
+                        <li><a href="profil-video.html">Video Profil</a></li>
+                    </ul>
+                </div>
+
+                <a href="identifikasi.html">Identifikasi</a>
+                <div class="dropdown">
+                    <a href="#">Data Observasi <i class="fa-solid fa-chevron-down"></i></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="observasi-guru.html">Observasi Guru</a></li>
+                        <li><a href="observasi-ortu.html">Observasi Orang Tua</a></li>
+                        <li><a href="grafik.html">Grafik Observasi</a></li>
+                    </ul>
+                </div>
+                <a href="dokumentasi.html">Dokumentasi</a>
+                <a href="hubungi.html">Hubungi</a>
+            </nav>
+
+            <div id="toggle">
+                <i class="fa-solid fa-bars"></i>
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- PAGE HEADER -->
+
+    <section class="page-header" id="page-header">
+
+            <div class="container">
+
+              <h1>Perkembangan Murid</h1>
+              <p>Visualisasi hasil observasi dan perkembangan kemampuan murid.</p>
+
+            </div>
+
+    </section>
+
+    <section class="grafik-section">
+
+    <div class="container">
+
+        <div class="title">
+
+            <h2>Grafik Hasil Observasi Murid</h2>
+
+            <p>
+                Visualisasi perkembangan kemampuan berdasarkan hasil asesmen.
+            </p>
+
+        </div>
+
+
+        <!-- PILIH SISWA -->
+
+        <div class="filter-box">
+
+            <label>
+                Pilih Murid
+            </label>
+
+            <select id="pilihSiswa">
+                <option value="">
+                    -- Pilih Nama Murid --
+                </option>
+            </select>
+
+        </div>
+
+
+        <!-- INFORMASI SISWA -->
+
+        <div class="student-info" id="studentInfo">
+
+        </div>
+
+
+        <!-- GRAFIK -->
+
+        <div class="chart-box">
+
+        <canvas id="grafikRadar"></canvas>
+
+    </div>
+
+    <div class="row mt-4">
+        <div class="col-md-12 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-primary text-white">
+                    <i class="bi bi-person-check"></i>
+                    <strong>Perilaku Belajar</strong>
+                </div>
+                <div class="card-body">
+                    <p id="perilakuBelajar">-</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-lightbulb"></i>
+                    <strong>Area Memerlukan Dukungan</strong>
+                </div>
+                <div class="card-body">
+                    <p id="areaDukungan">-</p>
+                </div>
+            </div>
+        </div>
+
+         <div class="col-md-12 mb-3">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-lightbulb"></i>
+                    <strong>Rekomendasi Guru</strong>
+                </div>
+                <div class="card-body">
+                    <p id="rekomendasiGuru">-</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-header bg-success text-white">
+                    <i class="bi bi-lightbulb"></i>
+                    <strong>Catatan Guru</strong>
+                </div>
+                <div class="card-body">
+                    <p id="catatanGuru">-</p>
+                </div>
+            </div>
+        </div>
+
+      </div>
+    </div>
+
+</section>
+    
+<!-- FOOTER -->
+
+<footer>
+<div class="container">
+
+<h2 id="footer-title"></h2>
+
+<p id="footer-address"></p>
+
+<div class="social">
+    <a id="facebook-link" href="#" target="_blank">
+        <i class="fab fa-facebook"></i>
+    </a>
+
+    <a id="instagram-link" href="#" target="_blank">
+        <i class="fab fa-instagram"></i>
+    </a>
+
+    <a id="youtube-link" href="#" target="_blank">
+        <i class="fab fa-youtube"></i>
+    </a>
+</div>
+
+<p class="copy" id="footer-copy"></p>
+
+</div>
+
+</footer>
+
+<script src="assets/js/script.js"></script>
+<script type="text/javascript">
+const API_KEY = "AIzaSyC_bF2r4x-qbv48Zcyg2dadlqGr5KPNG0M";
+const SHEET_ID = "1J3EldqNBHHIz5xr2JKWtQRE28AmUuPBZaK0L6hkqSeo";
+
+let chart = null;
+let allRows = [];
+let headers = [];
+
+//=====================================
+// GOOGLE DRIVE
+//===================================== 
+
+function driveImage(id){
+
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
+
+}
+
+function driveLogo(id){
+
+    return `https://lh3.googleusercontent.com/d/${id}=w200`;
+
+}
+
+//=====================================
+// NAVBAR & FOOTER
+//=====================================
+
+async function loadNavFooter(){
+
+    const url =
+    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:E20?key=${API_KEY}`;
+
+    const res = await fetch(url);
+
+    const data = await res.json();
+
+    const rows = data.values || [];
+
+    // ==========================
+    // NAVBAR
+    // ==========================
+
+    document.getElementById("logo-sekolah").src =
+        driveLogo(rows[2][1]);
+
+    document.getElementById("nama-brand").textContent =
+        rows[2][2];
+
+    document.getElementById("motto-brand").textContent =
+        rows[2][3];
+
+    document.getElementById("page-header").style.background = `
+        linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+        url(${driveImage(rows[2][4])})
+        center/cover no-repeat
+    `;
+
+    // ==========================
+    // FOOTER
+    // ==========================
+
+    document.getElementById("footer-title").textContent =
+        rows[5][1];
+
+    document.getElementById("footer-address").textContent =
+        rows[5][2];
+
+    document.getElementById("footer-copy").textContent =
+        rows[5][4];
+
+    document.getElementById("facebook-link").href =
+        rows[6][1];
+
+    document.getElementById("instagram-link").href =
+        rows[6][2];
+
+    document.getElementById("youtube-link").href =
+        rows[6][4];
+
+}
+
+//=====================================
+// LOAD DATA OBSERVASI
+//=====================================
+
+async function loadGrafik(){
+
+    const url =
+    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Form%20Responses%201!A:CU?key=${API_KEY}`;
+
+    const res = await fetch(url);
+
+    const data = await res.json();
+
+    const rows = data.values || [];
+
+    headers = rows[0];
+
+    allRows = rows.slice(1);
+
+    const select = document.getElementById("pilihSiswa");
+
+    select.innerHTML =
+    `<option value="">-- Pilih Siswa --</option>`;
+
+    allRows.forEach((row,index)=>{
+
+        select.innerHTML += `
+            <option value="${index}">
+                ${row[2]} - ${row[4]}
+            </option>
+        `;
+
+    });
+
+    select.addEventListener("change",function(){
+
+        if(this.value==="") return;
+
+        tampilkanData(this.value);
+
+    });
+
+    // tampilkan otomatis siswa pertama
+
+    if(allRows.length>0){
+
+        select.selectedIndex=1;
+
+        tampilkanData(0);
+
+    }
+
+}
+
+//=====================================
+// TAMPILKAN DATA SISWA
+//=====================================
+
+function tampilkanData(index){
+
+    const row = allRows[index];
+
+    document.getElementById("studentInfo").innerHTML = `
+        <strong>Nama Lengkap :</strong> ${row[2]}<br>
+        <strong>Nama Panggilan :</strong> ${row[3]}<br>
+        <strong>Kelas :</strong> ${row[4]}<br>
+        <strong>Guru :</strong> ${row[5]}<br>
+        <strong>Tanggal Observasi :</strong> ${row[6]}
+    `;
+
+    buatGrafik(row);
+
+    // Perilaku Belajar (Kolom 93)
+    const perilaku = (row[93] || "")
+      .split(",")
+      .map(item => item.trim())
+      .filter(Boolean);
+
+    document.getElementById("perilakuBelajar").innerHTML =
+      perilaku.length
+        ? perilaku.map(item => `<div class="item-list">✔ ${item}</div>`).join("")
+        : "-";
+
+    // Area Memerlukan Dukungan (Kolom 94)
+    const area = (row[94] || "")
+      .split(",")
+      .map(item => item.trim())
+      .filter(Boolean);
+
+    document.getElementById("areaDukungan").innerHTML =
+      area.length
+        ? area.map(item => `<div class="item-list">✔ ${item}</div>`).join("")
+        : "-";
+
+    // Rekomendasi Guru (Kolom 95)
+    const rekomendasi = (row[95] || "")
+      .split(",")
+      .map(item => item.trim())
+      .filter(Boolean);
+
+    document.getElementById("rekomendasiGuru").innerHTML =
+      rekomendasi.length
+        ? rekomendasi.map(item => `<div class="item-list">✔ ${item}</div>`).join("")
+        : "-";
+
+    const catatan = (row[96] || "")
+   .split(",")
+   .map(item => item.trim())
+   .filter(Boolean);
+
+    document.getElementById("catatanGuru").innerHTML =
+   catatan.length
+    ? catatan.map(item => `<div class="item-list">✔ ${item}</div>`).join("")
+    : "-";
+
+    }
+
+//=====================================
+// GRAFIK HORIZONTAL BAR
+//=====================================
+
+function buatGrafik(row){
+
+
+    const area = {
+
+        "Literasi":[7,16],
+
+        "Numerasi":[17,22],
+
+        "Komunikasi":[23,32],
+
+        "Sosial":[33,42],
+
+        "Emosi":[43,52],
+
+        "Motorik Halus":[53,62],
+
+        "Motorik Kasar":[63,72],
+
+        "Konsentrasi":[73,82],
+
+        "Kemandirian":[83,92]
+
+    };
+
+
+    let labels=[];
+    let nilai=[];
+
+
+    let totalSkor=0;
+    let totalItem=0;
+
+
+    Object.keys(area).forEach(nama=>{
+
+
+        let mulai=area[nama][0];
+        let akhir=area[nama][1];
+
+
+        let data=row.slice(mulai,akhir);
+
+
+        let jumlah=0;
+        let item=0;
+
+
+        data.forEach(v=>{
+
+
+            let skor=parseInt(v);
+
+
+            if(!isNaN(skor)){
+
+                jumlah+=skor;
+
+                item++;
+
+            }
+
+
+        });
+
+
+
+        if(item>0){
+
+
+            let persen=Math.round(
+                (jumlah/(item*4))*100
+            );
+
+
+            labels.push(nama);
+
+            nilai.push(persen);
+
+
+            totalSkor+=jumlah;
+
+            totalItem+=item;
+
+
+        }
+
+
+    });
+
+
+
+    // TOTAL KESELURUHAN
+
+    let totalPersen=Math.round(
+        (totalSkor/(totalItem*4))*100
+    );
+
+
+
+    labels.push("TOTAL PERKEMBANGAN");
+
+    nilai.push(totalPersen);
+
+
+
+    const canvas=document.getElementById("grafikRadar");
+
+
+    canvas.style.height="380px";
+
+
+
+    if(chart){
+
+        chart.destroy();
+
+    }
+
+
+
+    chart=new Chart(canvas,{
+
+
+        type:"bar",
+
+
+        data:{
+
+
+            labels:labels,
+
+
+            datasets:[{
+
+
+                label:"Persentase Perkembangan",
+
+
+                data:nilai,
+
+
+                backgroundColor:[
+
+                    "#0d6efd",
+                    "#198754",
+                    "#ffc107",
+                    "#dc3545",
+                    "#6f42c1",
+                    "#20c997",
+                    "#fd7e14",
+                    "#6610f2",
+                    "#343a40",
+                    "#0dcaf0"
+
+                ],
+
+
+                borderRadius:10
+
+
+            }]
+
+
+        },
+
+
+        options:{
+
+
+            indexAxis:"y",
+
+
+            responsive:true,
+
+
+            maintainAspectRatio:false,
+
+
+            plugins:{
+
+
+                legend:{
+
+
+                    display:false
+
+
+                },
+
+
+                tooltip:{
+
+
+                    callbacks:{
+
+
+                        label:function(ctx){
+
+
+                            return ctx.raw+"%";
+
+
+                        }
+
+
+                    }
+
+
+                }
+
+
+            },
+
+
+            scales:{
+
+
+                x:{
+
+
+                    min:0,
+
+
+                    max:100,
+
+
+                    ticks:{
+
+
+                        callback:function(value){
+
+
+                            return value+"%";
+
+
+                        },
+
+
+                        font:{
+
+
+                            size:14
+
+
+                        }
+
+
+                    }
+
+
+                },
+
+
+                y:{
+
+
+                    ticks:{
+
+
+                        font:{
+
+
+                            size:16,
+
+                            weight:"bold"
+
+                        }
+
+
+                    }
+
+
+                }
+
+
+            },
+
+
+            animation:{
+
+
+                duration:1000
+
+
+            }
+
+
+        }
+
+
+    });
+
+
+}
+
+//=====================================
+// INIT
+//=====================================
+
+document.addEventListener("DOMContentLoaded",async()=>{
+
+    await loadNavFooter();
+
+    await loadGrafik();
+
+});
+</script>
+
+</body>
+
+</html>

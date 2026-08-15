@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Berita Terkini</title>
+
+    <link rel="stylesheet" href="assets/css/style.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+    <style>
+        .page-header{
+		    margin-top:83px;
+		    padding:100px 0;
+		    color:#fff;
+		    text-align:center;
+		}
+
+		.page-header h1{
+		    font-size:42px;
+		    margin-bottom:15px;
+		}
+
+
+		.page-header p{
+		    font-size:18px;
+		}
+
+        .profile-section{
+            padding:50px 0;
+        }
+
+        .berita-layout{
+            display:grid;
+            grid-template-columns:2.8fr 1fr;
+            gap:35px;
+        }
+
+        #berita-detail{
+            min-width:0;
+        }
+
+        aside{
+            background:#fff;
+            border-radius:12px;
+            box-shadow:0 5px 20px rgba(0,0,0,.08);
+            padding:20px;
+            height:max-content;
+            position:sticky;
+            top:100px;
+        }
+
+        aside h3{
+            margin-bottom:15px;
+            color:#003f88;
+        }
+
+        #berita-list{
+            list-style:none;
+            padding:0;
+            margin:0;
+        }
+
+        #berita-list li{
+            border-bottom:1px solid #eee;
+        }
+
+        #berita-list a{
+            display:block;
+            padding:12px 0;
+            color:#333;
+            text-decoration:none;
+            font-weight:500;
+            transition:.3s;
+        }
+
+        #berita-list a:hover{
+            color:#0d6efd;
+            padding-left:0px;
+        }
+
+        #berita-list a.active{
+            color:#0d6efd;
+            font-weight:700;
+        }
+
+        @media(max-width:900px){
+
+            .berita-layout{
+                grid-template-columns:1fr;
+            }
+
+            aside{
+                position:static;
+            }
+
+        }
+
+        .berita{
+            margin-bottom:70px;
+            background:#fff;
+            border-radius:15px;
+            overflow:hidden;
+            box-shadow:0 10px 30px rgba(0,0,0,.08);
+        }
+
+        .berita img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+
+        .berita h2{
+            padding:25px 30px 10px;
+            color:#003f88;
+        }
+
+        .berita small{
+            display:block;
+            padding:0 30px 20px;
+            color:#888;
+        }
+
+        .berita .isi{
+            padding:0 30px 30px;
+        }
+
+        .berita .isi p{
+            line-height:1.9;
+            margin-bottom:18px;
+            color:#555;
+        }
+
+        .berita-img{
+            float:right;
+            width:320px;
+            max-width:45%;
+            max-height:350px;          /* tinggi tetap */
+            object-fit:cover;      /* gambar tidak gepeng */
+            margin:8px 0 12px 20px;
+            box-shadow:0 8px 20px rgba(0,0,0,.15);
+        }
+
+        .berita .isi::after{
+            content:"";
+            display:block;
+            clear:both;
+        }
+
+        .berita .isi p{
+            text-align:left;
+            line-height:1.9;
+        }
+
+        @media(max-width:768px){
+            .profile-grid{
+                grid-template-columns:1fr;
+            }
+
+            .page-header h1{
+                font-size:26px;
+            }
+
+             .berita h2{
+                padding:15px 10px 10px;
+                color:#003f88;
+                font-size: 18px;
+            }
+
+            .berita small{
+                display:block;
+                padding:0 10px 10px;
+                color:#888;
+            }
+
+            .berita .isi{
+              padding:0 10px 10px;
+            }
+
+            .berita .isi p{
+                line-height:1.9;
+                margin-bottom:18px;
+                color:#555;
+                font-size: 15px;
+            }
+
+            .berita-img{
+                float:none;
+                display:block;
+                width:100%;
+                max-width:100%;
+                border-radius: unset;
+                height:auto;
+                margin:15px auto;
+            }
+
+             .berita-layout aside{
+                margin-top: -80px;
+            }
+        }
+    </style>
+
+</head>
+<body>
+
+<header>
+
+<div class="container nav">
+
+<div class="logo">
+    <img id="logo-sekolah" src="" alt="Logo">
+    <div>
+        <h2 id="nama-brand"></h2>
+        <p id="motto-brand"></p>
+    </div>
+</div>
+
+<nav id="menu">
+    <a href="index.html">Beranda</a>
+    
+    <div class="dropdown">
+        <a href="#">Profil <i class="fa-solid fa-chevron-down"></i></a>
+
+        <ul class="dropdown-menu">
+            <li><a href="profil-sekolah.html">Profil Sekolah</a></li>
+            <li><a href="profil-layanan.html">Profil Layanan</a></li>
+            <li><a href="profil-video.html">Video Profil</a></li>
+        </ul>
+    </div>
+
+    <a href="identifikasi.html">Identifikasi</a>
+    <div class="dropdown">
+        <a href="#">Data Observasi <i class="fa-solid fa-chevron-down"></i></a>
+        <ul class="dropdown-menu">
+            <li><a href="observasi-guru.html">Observasi Guru</a></li>
+            <li><a href="observasi-ortu.html">Observasi Orang Tua</a></li>
+            <li><a href="grafik.html">Grafik Observasi</a></li>
+        </ul>
+    </div>
+
+    <a href="dokumentasi.html">Dokumentasi</a>
+    <a href="hubungi.html">Hubungi</a>
+</nav>
+
+<div id="toggle">
+<i class="fa-solid fa-bars"></i>
+</div>
+
+</div>
+
+</header>
+
+<section class="page-header" id="page-header">
+
+    <div class="container">
+
+        <h1>Berita Terkini</h1>
+        <p>Ikuti berbagai informasi, kegiatan, dan perkembangan terbaru dari sekolah kami.</p>
+
+    </div>
+
+</section>
+
+
+<section class="profile-section">
+
+    <div class="container">
+
+        <div class="berita-layout">
+
+            <div id="berita-detail"></div>
+
+            <aside>
+
+                <h3>Berita Lainnya</h3>
+
+                <ul id="berita-list"></ul>
+
+            </aside>
+
+        </div>
+
+    </div>
+
+</section>
+
+<footer>
+
+<div class="container">
+
+<h2 id="footer-title"></h2>
+
+<p id="footer-address"></p>
+
+<div class="social">
+    <a id="facebook-link" href="#" target="_blank">
+        <i class="fab fa-facebook"></i>
+    </a>
+
+    <a id="instagram-link" href="#" target="_blank">
+        <i class="fab fa-instagram"></i>
+    </a>
+
+    <a id="youtube-link" href="#" target="_blank">
+        <i class="fab fa-youtube"></i>
+    </a>
+</div>
+
+<p class="copy" id="footer-copy"></p>
+
+</div>
+
+</footer>
+
+<script src="assets/js/script.js"></script>
+<script>
+const API_KEY = "AIzaSyC_bF2r4x-qbv48Zcyg2dadlqGr5KPNG0M";
+const SHEET_ID = "1J3EldqNBHHIz5xr2JKWtQRE28AmUuPBZaK0L6hkqSeo";
+
+function driveLogo(id){
+    return `https://lh3.googleusercontent.com/d/${id}=w200`;
+}
+
+function driveImage(id){
+    return `https://lh3.googleusercontent.com/d/${id}=w2000`;
+}
+
+function driveImages(id){
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
+}
+
+
+async function loadNavFooter(){
+
+    const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:E20?key=${API_KEY}`;
+
+    const res=await fetch(url);
+
+    const data=await res.json();
+
+    const rows=data.values || [];
+
+    // ========= NAVBAR =========
+
+    const logoId=rows[2][1];
+    const brand=rows[2][2];
+    const motto=rows[2][3];
+    const bgId=rows[2][4];
+
+    document.getElementById("logo-sekolah").src = driveImage(logoId);
+
+    document.getElementById("nama-brand").textContent=brand;
+
+    document.getElementById("motto-brand").textContent=motto;
+
+    document.getElementById("page-header").style.background=`
+        linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+        url(${driveImages(bgId)}) center/cover no-repeat
+    `;
+
+    // ========= FOOTER =========
+
+    document.getElementById("footer-title").textContent=rows[5][1];
+
+    document.getElementById("footer-address").textContent=rows[5][2];
+
+    document.getElementById("footer-copy").textContent=rows[5][4];
+
+    document.getElementById("facebook-link").href=rows[6][1];
+
+    document.getElementById("instagram-link").href=rows[6][2];
+
+    document.getElementById("youtube-link").href=rows[6][4];
+
+}
+
+let daftarBerita = [];
+const params = new URLSearchParams(window.location.search);
+const beritaId = params.get("id");
+async function loadBerita(){
+
+    try{
+
+        const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Berita!A1:Z100?key=${API_KEY}`;
+
+        const res=await fetch(url);
+        const data=await res.json();
+
+        const rows=data.values || [];
+
+        daftarBerita=[];
+
+        // Mulai dari kolom B
+        for(let col=1; col<rows[0].length; col++){
+
+            const status=(rows[1]?.[col] || "").trim();
+
+            if(status!=="Aktif") continue;
+
+            const penulis=rows[2]?.[col] || "";
+            const tanggal=rows[3]?.[col] || "";
+            const thumbnail=rows[4]?.[col] || "";
+            const judul=rows[5]?.[col] || "";
+
+            let isi="";
+
+            for(let r=6;r<rows.length;r++){
+
+                const value=(rows[r]?.[col] || "").trim();
+
+                if(!value) continue;
+
+                // Deteksi ID gambar Google Drive
+                if(/^[A-Za-z0-9_-]{20,}$/.test(value)){
+
+                    isi+=`
+                        <img
+                            class="berita-img"
+                            src="${driveImages(value)}"
+                            alt="">
+                    `;
+
+                }else{
+
+                    isi+=`
+                        <p>${value}</p>
+                    `;
+
+                }
+
+            }
+
+            const id = rows[0]?.[col] || "";
+
+            daftarBerita.push({
+                id,
+                judul,
+                penulis,
+                tanggal,
+                thumbnail,
+                isi
+            });
+
+        }
+
+        renderSidebar();
+
+    if(daftarBerita.length){
+
+        let index = daftarBerita.findIndex(item => item.id === beritaId);
+
+        // Jika id tidak ditemukan, tampilkan berita pertama
+        if(index === -1){
+            index = 0;
+        }
+
+        tampilBerita(index);
+
+    }else{
+
+    document.getElementById("berita-detail").innerHTML=`
+        <p>Tidak ada berita yang tersedia.</p>
+    `;
+
+}
+
+    }catch(err){
+
+        console.error(err);
+
+    }
+
+}
+
+function renderSidebar(){
+
+    const list=document.getElementById("berita-list");
+
+    list.innerHTML="";
+
+    daftarBerita.forEach((berita,index)=>{
+
+        list.innerHTML+=`
+            <li>
+                <a href="#"
+                   id="menu-${index}"
+                   onclick="tampilBerita(${index});return false;">
+                    ${berita.judul}
+                </a>
+            </li>
+        `;
+
+    });
+
+}
+
+function tampilBerita(index){
+
+    document.querySelectorAll("#berita-list a").forEach(a=>{
+        a.classList.remove("active");
+    });
+
+    document.getElementById(`menu-${index}`)?.classList.add("active");
+
+    const berita = daftarBerita[index];
+
+    document.getElementById("berita-detail").innerHTML=`
+
+        <article class="berita">
+
+            <img class="thumb"
+                 src="${driveImages(berita.thumbnail)}"
+                 alt="${berita.judul}">
+
+            <h2>${berita.judul}</h2>
+
+            <small>
+                <i class="fa fa-user"></i> ${berita.penulis}
+                &nbsp;&nbsp;
+                <i class="fa fa-calendar"></i> ${berita.tanggal}
+            </small>
+
+            <div class="isi">
+                ${berita.isi}
+            </div>
+
+        </article>
+
+    `;
+
+}
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+    loadNavFooter();
+    loadBerita();
+
+});
+</script>
+</body>
+</html>
