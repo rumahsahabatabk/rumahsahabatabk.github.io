@@ -4,26 +4,32 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Beranda</title>
+
 <link rel="stylesheet" href="style.css">
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet"
 href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
-
 <body>
 
 <header>
+    
 <div class="container nav">
 
-<div class="logo">
-    <img id="logo-sekolah" src="" alt="Logo">
+<a href="index.html" class="logo">
+    <img
+        id="logo-sekolah"
+        src=""
+        alt="Logo"
+        onerror="this.onerror=null;this.src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiwfG8nPjICL_ccGSRrlvFxw1hpDnEbYiF6u32iuSCvq5KsjEbxhF-9YcRStylaQ6of3RUVF9Z_IQ70-RxtYva3GctSX6ZqcBNsrzkURFWq4lpbkp4I1bgkPTrYs4iYQHkP381W-TU9krOu9dSH6REI_Y4Ebr5fiq4H6d9m0C88R2w69lWzcMQe7I0HIE/w200-h200/abk.png'">
     <div>
         <h2 id="nama-brand"></h2>
         <p id="motto-brand"></p>
     </div>
-</div>
+</a>
 
 <nav id="menu">
     <a href="index.html">Beranda</a>
@@ -133,6 +139,24 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 </section>
 
+
+
+<a href="https://wa.me/6282122532891?text=Halo%20Admin%20Sekolah,%20saya%20ingin%20bertanya."
+   class="wa-floating"
+   target="_blank">
+
+    <i class="fab fa-whatsapp"></i>
+
+</a>
+
+<a href="https://wa.me/628115997007?text=Halo%20Admin%20Sekolah,%20saya%20ingin%20bertanya."
+   class="wa-floating"
+   target="_blank">
+
+    <i class="fab fa-whatsapp"></i>
+
+</a>
+
 <footer>
 
 <div class="container">
@@ -158,8 +182,8 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 <p class="copy" id="footer-copy"></p>
 
 </div>
-
 </footer>
+
 <script src="script.js"></script>
 <script>
 const API_KEY = "AIzaSyAwSuM68_HlFIUxvR1HOmlIwo4pMKEnHU0";
@@ -340,17 +364,67 @@ async function loadAbout() {
 ========================================== */
 
 async function loadSlider() {
+
     const rows = await getSheet("Home!B3:B20");
+
     const slider = document.getElementById("slider");
-    slider.innerHTML = rows
+
+    const defaultSlides = [
+        "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png",
+        "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiXq7n1KX9tDS9ZMgU26jhyirJJ97V8UX7kcx3T3nOg0Ntm9uk0fuKPLiELUGygqedBh_WFo2Eb5mYhz4eh3Lh0xiYy0qiTaHI9Ixj-AcP3o60YJV6TFUg0kp5BXTJ3DtsVELbhmzxLxeuVR2gUOeT3qg-HddOQeaP_IqdTK50sle5goTzdhApeHL3amoA/s400/abk2.png",
+        "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjmyq_BjGp6Bgxid9t7w4HL9WYfnN0JgvioBQ7jxmatQMZxZhYFYLHsSbb2pya_Umm7DLCnUC13BahIt6ld1sxMDKY-SdDzB6XobG1Qopro4o8Fr1txeiCSwVZZwbwS2sBBWnbRRBy_EQB6FMzE0eRTyomRJLpmFnXf6OUDA7F8tByUAx2UsH9lJW4rBBU/s400/abk3.png"
+    ];
+
+    slider.innerHTML = "";
+
+    const images = rows
         .filter(row => row[0])
-        .map((row, index) => `
-            <div class="slide ${index === 0 ? "active" : ""}"
-                style="background-image:url('https://drive.google.com/thumbnail?id=${row[0]}&sz=w2000')">
+        .map(row => `https://drive.google.com/thumbnail?id=${row[0]}&sz=w2000`);
+
+    // Jika tidak ada data dari sheet
+    if(images.length === 0){
+
+        slider.innerHTML = defaultSlides.map((img,index)=>`
+            <div class="slide ${index===0 ? "active" : ""}"
+                 style="background-image:url('${img}')">
             </div>
-        `)
-        .join("");
+        `).join("");
+
+        startSlider();
+        return;
+    }
+
+    // Cek setiap gambar
+    for(let i=0;i<images.length;i++){
+
+        const url = images[i];
+
+        const img = new Image();
+
+        const finalUrl = await new Promise(resolve=>{
+
+            img.onload = ()=>resolve(url);
+
+            img.onerror = ()=>{
+
+                resolve(defaultSlides[i % defaultSlides.length]);
+
+            };
+
+            img.src = url;
+
+        });
+
+        slider.innerHTML += `
+            <div class="slide ${i===0 ? "active" : ""}"
+                 style="background-image:url('${finalUrl}')">
+            </div>
+        `;
+
+    }
+
     startSlider();
+
 }
 
 /* ==========================================
