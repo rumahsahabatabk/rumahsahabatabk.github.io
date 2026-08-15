@@ -25,7 +25,7 @@ href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style type="text/css">
 .page-header{
-    margin-top:83px;
+    margin-top:73px;
     padding:110px 20px;
     text-align:center;
     color:#fff;
@@ -163,13 +163,17 @@ href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.
 
         <div class="container nav">
 
-             <div class="logo">
-                <img id="logo-sekolah" src="" alt="Logo">
+             <a href="index.html" class="logo">
+                <img
+                    id="logo-sekolah"
+                    src=""
+                    alt="Logo"
+                    onerror="this.onerror=null;this.src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiwfG8nPjICL_ccGSRrlvFxw1hpDnEbYiF6u32iuSCvq5KsjEbxhF-9YcRStylaQ6of3RUVF9Z_IQ70-RxtYva3GctSX6ZqcBNsrzkURFWq4lpbkp4I1bgkPTrYs4iYQHkP381W-TU9krOu9dSH6REI_Y4Ebr5fiq4H6d9m0C88R2w69lWzcMQe7I0HIE/w200-h200/abk.png'">
                 <div>
                     <h2 id="nama-brand"></h2>
                     <p id="motto-brand"></p>
                 </div>
-            </div>
+            </a>
 
             <nav id="menu">
                 <a href="index.html">Beranda</a>
@@ -265,6 +269,14 @@ href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.
 
 </section>
 
+<a href="https://wa.me/628115997007?text=Halo%20Admin%20Sekolah,%20saya%20ingin%20bertanya."
+   class="wa-floating"
+   target="_blank">
+
+    <i class="fab fa-whatsapp"></i>
+
+</a>
+
 <!-- FOOTER -->
 
 <footer>
@@ -346,10 +358,31 @@ async function loadNavFooter(){
     document.getElementById("motto-brand").textContent =
         rows[2][3] || "";
 
-    document.getElementById("page-header").style.background = `
-        linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-        url(${driveImage(rows[2][4])}) center/cover no-repeat
-    `;
+    const DEFAULT_HEADER = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png";
+
+    const bgUrl = driveImage(rows[2][4]);
+
+    const img = new Image();
+
+    img.onload = function(){
+
+        document.getElementById("page-header").style.background = `
+            linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+            url(${bgUrl}) center/cover no-repeat
+        `;
+
+    };
+
+    img.onerror = function(){
+
+        document.getElementById("page-header").style.background = `
+            linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+            url(${DEFAULT_HEADER}) center/cover no-repeat
+        `;
+
+    };
+
+    img.src = bgUrl;
 
     // ==========================
     // FOOTER
