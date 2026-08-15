@@ -15,7 +15,7 @@
 
     <style>
         .page-header{
-		    margin-top:83px;
+		    margin-top:73px;
 		    padding:100px 0;
 		    color:#fff;
 		    text-align:center;
@@ -44,7 +44,6 @@
 
         .profile-grid img{
             width:100%;
-            border-radius:20px;
             box-shadow:0 15px 35px rgba(0,0,0,.15);
         }
 
@@ -101,13 +100,17 @@
 
 <div class="container nav">
 
-<div class="logo">
-    <img id="logo-sekolah" src="" alt="Logo">
+<a href="index.html" class="logo">
+    <img
+        id="logo-sekolah"
+        src=""
+        alt="Logo"
+        onerror="this.onerror=null;this.src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiwfG8nPjICL_ccGSRrlvFxw1hpDnEbYiF6u32iuSCvq5KsjEbxhF-9YcRStylaQ6of3RUVF9Z_IQ70-RxtYva3GctSX6ZqcBNsrzkURFWq4lpbkp4I1bgkPTrYs4iYQHkP381W-TU9krOu9dSH6REI_Y4Ebr5fiq4H6d9m0C88R2w69lWzcMQe7I0HIE/w200-h200/abk.png'">
     <div>
         <h2 id="nama-brand"></h2>
         <p id="motto-brand"></p>
     </div>
-</div>
+</a>
 
 <nav id="menu">
     <a href="index.html">Beranda</a>
@@ -162,17 +165,18 @@
     <div class="container">
 
         <div class="profile-grid">
-
             <!-- Gambar Sekolah -->
             <div>
-                <img id="school-image" src="" alt="Gedung Sekolah">
+                <img
+                    id="school-image"
+                    src=""
+                    alt="Gedung Sekolah"
+                    onerror="this.onerror=null;this.src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiLvSk4KRIm1d6FMLxS5lGwbZrxIvoT3oINyAaSw_Loa-fySclq5AMVr3NWfd55gBP2skKbhhxP5NHwlGZBbFJLp7Rw7a7I3dREOOWwHjze21lOON10DcMWbc11WR2AcbG9iMFTykmRBqgPhK8qobND9Ej96g4YBoOKLu6liATzYDsxsQrqhIxoG5j_zug/w400-h266/school.png'">
             </div>
-
             <!-- Tentang Sekolah -->
             <div class="profile-content" id="about-school">
                 <!-- Diisi oleh JavaScript -->
             </div>
-
         </div>
 
         <!-- Visi & Misi -->
@@ -206,6 +210,15 @@
 
 </section>
 
+
+<a href="https://wa.me/628115997007?text=Halo%20Admin%20Sekolah,%20saya%20ingin%20bertanya."
+   class="wa-floating"
+   target="_blank">
+
+    <i class="fab fa-whatsapp"></i>
+
+</a>
+
 <footer>
 
 <div class="container">
@@ -238,6 +251,7 @@
 <script>
 const API_KEY = "AIzaSyAwSuM68_HlFIUxvR1HOmlIwo4pMKEnHU0";
 const SHEET_ID = "1P_Tz_MT08L-UQel8Rq3SaYd-jhFKb7knSHOJqmv_8-E";
+
 function driveLogo(id){
     return `https://lh3.googleusercontent.com/d/${id}=w200`;
 }
@@ -274,10 +288,32 @@ async function loadNavFooter(){
 
     document.getElementById("motto-brand").textContent=motto;
 
-    document.getElementById("page-header").style.background=`
-        linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-        url(${driveImages(bgId)}) center/cover no-repeat
-    `;
+    const DEFAULT_HEADER =
+    "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png";
+
+    const bgUrl = driveImages(bgId);
+
+    const testImg = new Image();
+
+    testImg.onload = function(){
+
+        document.getElementById("page-header").style.background = `
+            linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+            url(${bgUrl}) center/cover no-repeat
+        `;
+
+    };
+
+    testImg.onerror = function(){
+
+        document.getElementById("page-header").style.background = `
+            linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+            url(${DEFAULT_HEADER}) center/cover no-repeat
+        `;
+
+    };
+
+    testImg.src = bgUrl;
 
     // ========= FOOTER =========
 
