@@ -533,8 +533,14 @@ function tampilBerita(index){
 
     `;
 
-}
 
+    const beritaDetail = document.getElementById("berita-detail");
+    const posisi = beritaDetail.getBoundingClientRect().top + window.scrollY - 90;
+    window.scrollTo({
+        top: posisi,
+        behavior: "smooth"
+    });
+}
 document.addEventListener("DOMContentLoaded",()=>{
 
     loadNavFooter();
