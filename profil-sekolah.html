@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Profil Sekolah</title>
-
+    <link rel="icon" type="image/x-icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiwfG8nPjICL_ccGSRrlvFxw1hpDnEbYiF6u32iuSCvq5KsjEbxhF-9YcRStylaQ6of3RUVF9Z_IQ70-RxtYva3GctSX6ZqcBNsrzkURFWq4lpbkp4I1bgkPTrYs4iYQHkP381W-TU9krOu9dSH6REI_Y4Ebr5fiq4H6d9m0C88R2w69lWzcMQe7I0HIE/w200-h200/abk.png"/>
     <link rel="stylesheet" href="style.css">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -100,7 +100,7 @@
 
 <div class="container nav">
 
-<a href="index.html" class="logo">
+<a href="./" class="logo">
     <img
         id="logo-sekolah"
         src=""
@@ -113,7 +113,7 @@
 </a>
 
 <nav id="menu">
-    <a href="index.html">Beranda</a>
+    <a href="./">Beranda</a>
     
     <div class="dropdown">
         <a href="#">Profil <i class="fa-solid fa-chevron-down"></i></a>
@@ -219,31 +219,76 @@
 
 </a>
 
-<footer>
+<footer class="footer">
 
-<div class="container">
+    <div class="container footer-grid">
 
-<h2 id="footer-title"></h2>
+        <!-- Brand -->
+        <div class="footer-col">
+            <h2 id="footer-title"></h2>
+            <p class="footer-desc">
+                Sekolah yang berkomitmen memberikan layanan pendidikan inklusif,
+                profesional, dan berkualitas untuk seluruh peserta didik.
+            </p>
+        </div>
 
-<p id="footer-address"></p>
+        <!-- Kontak -->
+        <div class="footer-col">
+            <h3>Kontak</h3>
 
-<div class="social">
-    <a id="facebook-link" href="#" target="_blank">
-        <i class="fab fa-facebook"></i>
-    </a>
+            <p>
+                <i class="fa-solid fa-location-dot"></i>
+                <span id="footer-address"></span>
+            </p>
 
-    <a id="instagram-link" href="#" target="_blank">
-        <i class="fab fa-instagram"></i>
-    </a>
+            <p>
+                <i class="fa-solid fa-phone"></i>
+                <span id="footer-phone"></span>
+            </p>
 
-    <a id="youtube-link" href="#" target="_blank">
-        <i class="fab fa-youtube"></i>
-    </a>
-</div>
+            <p>
+                <i class="fa-solid fa-envelope"></i>
+                <span id="footer-email"></span>
+            </p>
+        </div>
 
-<p class="copy" id="footer-copy"></p>
+        <!-- Menu -->
+        <div class="footer-col">
+            <h3>Menu</h3>
 
-</div>
+            <a href="./">Beranda</a>
+            <a href="profil-sekolah.html">Profil</a>
+            <a href="identifikasi.html">Identifikasi</a>
+            <a href="grafik.html">Grafik</a>
+            <a href="hubungi.html">Hubungi</a>
+        </div>
+
+        <!-- Sosial -->
+        <div class="footer-col">
+            <h3>Ikuti Kami</h3>
+
+            <div class="social">
+
+                <a id="facebook-link" href="#" target="_blank">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+
+                <a id="instagram-link" href="#" target="_blank">
+                    <i class="fab fa-instagram"></i>
+                </a>
+
+                <a id="youtube-link" href="#" target="_blank">
+                    <i class="fab fa-youtube"></i>
+                </a>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="footer-bottom">
+        <p id="footer-copy"></p>
+    </div>
 
 </footer>
 
@@ -264,10 +309,27 @@ function driveImages(id){
     return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
 }
 
+function extractDriveId(value) {
+    if (!value) return "";
+
+    // Jika sudah berupa ID
+    if (!value.includes("http")) return value.trim();
+
+    // Format: .../file/d/ID/view
+    let match = value.match(/\/d\/([a-zA-Z0-9_-]+)/);
+    if (match) return match[1];
+
+    // Format: ...?id=ID
+    match = value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (match) return match[1];
+
+    return value.trim();
+}
+
 
 async function loadNavFooter(){
 
-    const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:E20?key=${API_KEY}`;
+    const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:G20?key=${API_KEY}`;
 
     const res=await fetch(url);
 
@@ -277,10 +339,11 @@ async function loadNavFooter(){
 
     // ========= NAVBAR =========
 
-    const logoId=rows[2][1];
+    const logoId = extractDriveId(rows[2][1]);
+    document.getElementById("logo-sekolah").src = driveImage(logoId);
     const brand=rows[2][2];
     const motto=rows[2][3];
-    const bgId=rows[2][4];
+    const bgId = extractDriveId(rows[2][4] || "");
 
     document.getElementById("logo-sekolah").src = driveImage(logoId);
 
@@ -302,7 +365,7 @@ async function loadNavFooter(){
             url(${bgUrl}) center/cover no-repeat
         `;
 
-    };
+    }; 
 
     testImg.onerror = function(){
 
@@ -322,6 +385,10 @@ async function loadNavFooter(){
     document.getElementById("footer-address").textContent=rows[5][2];
 
     document.getElementById("footer-copy").textContent=rows[5][4];
+
+    document.getElementById("footer-phone").textContent=rows[5][5];
+
+    document.getElementById("footer-email").textContent=rows[5][6];
 
     document.getElementById("facebook-link").href=rows[6][1];
 
