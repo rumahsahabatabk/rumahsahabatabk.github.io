@@ -95,37 +95,12 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
         <div class="section-title">
             <h2>Mengapa Memilih Kami</h2>
-            <p>Memberikan layanan pendidikan yang berkualitas, inklusif, dan berorientasi pada perkembangan peserta didik.</p>
+            <p id="why-description"></p>
         </div>
 
-        <!-- Statistik -->
-        <div class="stats-grid">
+        <div class="stats-grid" id="stats-grid"></div>
 
-            <div class="stat-box">
-                <span class="number">850+</span>
-                <span class="label">Peserta Didik</span>
-            </div>
-
-            <div class="stat-box">
-                <span class="number">52</span>
-                <span class="label">Guru & Tendik</span>
-            </div>
-
-            <div class="stat-box">
-                <span class="number">18</span>
-                <span class="label">Rombel</span>
-            </div>
-
-            <div class="stat-box">
-                <span class="number">25+</span>
-                <span class="label">Prestasi</span>
-            </div>
-
-        </div>
-
-        <!-- Keunggulan -->
         <div class="why-list">
-
             <div class="why-item">
                 <i class="fa-solid fa-circle-check"></i>
                 <span>Identifikasi Dini</span>
@@ -145,7 +120,6 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
                 <i class="fa-solid fa-circle-check"></i>
                 <span>Lingkungan Sekolah Ramah Anak</span>
             </div>
-
         </div>
 
     </div>
@@ -657,6 +631,26 @@ async function loadNews(){
 
 }
 
+async function loadWhyUs(){
+
+    // Deskripsi
+    const desc = (await getSheet("Home!T2:T2"))[0]?.[0] || "";
+
+    document.getElementById("why-description").textContent = desc;
+
+    // Statistik
+    const stats = await getSheet("Home!T3:U6");
+
+    const container = document.getElementById("stats-grid");
+
+    container.innerHTML = stats.map(row => `
+        <div class="stat-box">
+            <span class="number">${row[1] || ""}</span>
+            <span class="label">${row[0] || ""}</span>
+        </div>
+    `).join("");
+}
+
 /* ==========================================
    LOAD WEBSITE
 ========================================== */
@@ -666,6 +660,7 @@ async function loadWebsite() {
         await loadNavFooter();
         await loadHero();
         await loadAbout();
+        await loadWhyUs();
         await loadSlider();
         await loadNews();
 
