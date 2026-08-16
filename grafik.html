@@ -695,17 +695,19 @@ function tampilkanData(index){
 //=====================================
 
 function buatGrafik(row){
-const area = {
-        "Literasi":[8,18],          // 10 soal
-        "Numerasi":[18,24],         // 6 soal
-        "Komunikasi":[24,34],       // 10 soal
-        "Sosial":[34,44],           // 10 soal
-        "Emosi":[44,54],            // 10 soal
-        "Motorik Halus":[54,64],    // 10 soal
-        "Motorik Kasar":[64,74],    // 10 soal
-        "Konsentrasi":[74,84],      // 10 soal
-        "Kemandirian":[84,94]       // 10 soal
+
+   const area = {
+        "Literasi":[7,17],          
+        "Numerasi":[17,23],         
+        "Komunikasi":[23,33],       
+        "Sosial":[33,43],           
+        "Emosi":[43,53],            
+        "Motorik Halus":[53,63],    
+        "Motorik Kasar":[63,73],    
+        "Konsentrasi":[73,83],      
+        "Kemandirian":[83,93]       
     };
+
 
     let labels=[];
     let nilai=[];
@@ -737,7 +739,7 @@ const area = {
 
             if(!isNaN(skor)){
 
-                jumlah+=skor;
+                jumlah += skor;
 
                 item++;
 
@@ -761,9 +763,9 @@ const area = {
             nilai.push(persen);
 
 
-            totalSkor+=jumlah;
+            totalSkor += jumlah;
 
-            totalItem+=item;
+            totalItem += item;
 
 
         }
@@ -778,7 +780,6 @@ const area = {
     let totalPersen=Math.round(
         (totalSkor/(totalItem*4))*100
     );
-
 
 
     labels.push("TOTAL PERKEMBANGAN");
@@ -946,7 +947,9 @@ const area = {
 
                             size:16,
 
+
                             weight:"bold"
+
 
                         }
 
