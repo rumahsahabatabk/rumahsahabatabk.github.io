@@ -222,6 +222,60 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 <script src="script.js"></script>
 <script>
+/* ==============================
+   PROTEKSI WEBSITE
+============================== */
+
+// Disable klik kanan
+document.addEventListener("contextmenu", function(e){
+    e.preventDefault();
+});
+
+
+// Disable shortcut Inspect Element
+document.addEventListener("keydown", function(e){
+
+    // F12
+    if(e.key === "F12"){
+        e.preventDefault();
+    }
+
+    // Ctrl + Shift + I (Inspect)
+    if(e.ctrlKey && e.shiftKey && e.key === "I"){
+        e.preventDefault();
+    }
+
+    // Ctrl + Shift + J (Console)
+    if(e.ctrlKey && e.shiftKey && e.key === "J"){
+        e.preventDefault();
+    }
+
+    // Ctrl + Shift + C (Element picker)
+    if(e.ctrlKey && e.shiftKey && e.key === "C"){
+        e.preventDefault();
+    }
+
+    // Ctrl + U (View Source)
+    if(e.ctrlKey && e.key === "u"){
+        e.preventDefault();
+    }
+
+});
+
+
+// Disable copy
+document.addEventListener("copy", function(e){
+    e.preventDefault();
+});
+
+
+// Disable select text
+document.addEventListener("selectstart", function(e){
+    e.preventDefault();
+});
+
+</script>
+<script>
 const API_KEY = "AIzaSyAwSuM68_HlFIUxvR1HOmlIwo4pMKEnHU0";
 const SHEET_ID = "1P_Tz_MT08L-UQel8Rq3SaYd-jhFKb7knSHOJqmv_8-E";
 
