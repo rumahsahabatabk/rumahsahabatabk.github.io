@@ -6,25 +6,30 @@
 <title>Beranda</title>
 <link rel="icon" type="image/x-icon" href="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiwfG8nPjICL_ccGSRrlvFxw1hpDnEbYiF6u32iuSCvq5KsjEbxhF-9YcRStylaQ6of3RUVF9Z_IQ70-RxtYva3GctSX6ZqcBNsrzkURFWq4lpbkp4I1bgkPTrYs4iYQHkP381W-TU9krOu9dSH6REI_Y4Ebr5fiq4H6d9m0C88R2w69lWzcMQe7I0HIE/w200-h200/abk.png"/>
 <link rel="stylesheet" href="style.css">
-
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 <body>
+<div id="loadingFloat" class="loading-float">
+    <div class="dots-loader">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
 
+    <div class="loading-text"></div>
+</div>
 <header>
     
 <div class="container nav">
 
 <a href="./" class="logo">
     <img
-        id="logo-sekolah"
-        src=""
-        alt="Logo"
-        onerror="this.onerror=null;this.src='https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiwfG8nPjICL_ccGSRrlvFxw1hpDnEbYiF6u32iuSCvq5KsjEbxhF-9YcRStylaQ6of3RUVF9Z_IQ70-RxtYva3GctSX6ZqcBNsrzkURFWq4lpbkp4I1bgkPTrYs4iYQHkP381W-TU9krOu9dSH6REI_Y4Ebr5fiq4H6d9m0C88R2w69lWzcMQe7I0HIE/w200-h200/abk.png'">
+    id="logo-sekolah"
+    src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjiwfG8nPjICL_ccGSRrlvFxw1hpDnEbYiF6u32iuSCvq5KsjEbxhF-9YcRStylaQ6of3RUVF9Z_IQ70-RxtYva3GctSX6ZqcBNsrzkURFWq4lpbkp4I1bgkPTrYs4iYQHkP381W-TU9krOu9dSH6REI_Y4Ebr5fiq4H6d9m0C88R2w69lWzcMQe7I0HIE/w200-h200/abk.png"
+    alt="Logo">
     <div>
         <h2 id="nama-brand"></h2>
         <p id="motto-brand"></p>
@@ -60,7 +65,7 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 </nav>
 
 <div id="toggle">
-<i class="fa-solid fa-bars"></i>
+    <i class="fa-solid fa-bars"></i>
 </div>
 
 </div>
@@ -220,188 +225,164 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 </footer>
 
+<script src="config.js"></script>
 <script src="script.js"></script>
 <script>
-/* ==============================
-   PROTEKSI WEBSITE
-============================== */
-
-// Disable klik kanan
-document.addEventListener("contextmenu", function(e){
-    e.preventDefault();
-});
-
-
-// Disable shortcut Inspect Element
-document.addEventListener("keydown", function(e){
-
-    // F12
-    if(e.key === "F12"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + I (Inspect)
-    if(e.ctrlKey && e.shiftKey && e.key === "I"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + J (Console)
-    if(e.ctrlKey && e.shiftKey && e.key === "J"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + C (Element picker)
-    if(e.ctrlKey && e.shiftKey && e.key === "C"){
-        e.preventDefault();
-    }
-
-    // Ctrl + U (View Source)
-    if(e.ctrlKey && e.key === "u"){
-        e.preventDefault();
-    }
-
-});
-
-
-// Disable copy
-document.addEventListener("copy", function(e){
-    e.preventDefault();
-});
-
-
-// Disable select text
-document.addEventListener("selectstart", function(e){
-    e.preventDefault();
-});
-
-</script>
-<script>
-const API_KEY = "AIzaSyAwSuM68_HlFIUxvR1HOmlIwo4pMKEnHU0";
-const SHEET_ID = "1P_Tz_MT08L-UQel8Rq3SaYd-jhFKb7knSHOJqmv_8-E";
-
 let current = 0;
-async function getSheet(range) {
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-        throw new Error(`Gagal mengambil data (${response.status})`);
-    }
-
-    const data = await response.json();
-    return data.values || [];
+const nav = performance.getEntriesByType("navigation")[0];
+if(nav && nav.type === "reload"){
+    sessionStorage.clear();
 }
 
-function arrayToObject(rows) {
+async function getData(page){
+
+    const key = "cache_" + page;
+
+    const cache = sessionStorage.getItem(key);
+
+    if(cache){
+        return JSON.parse(cache);
+    }
+
+    const data = await fetch(`${API_URL}?page=${page}`)
+        .then(r => r.json());
+
+    sessionStorage.setItem(key, JSON.stringify(data));
+
+    return data;
+
+}
+
+/* ==========================================
+   HELPER
+========================================== */
+
+function arrayToObject(rows){
+
     const obj = {};
 
-    rows.forEach(row => {
+    rows.forEach(row=>{
+
         obj[row[0]] = row[1];
+
     });
 
     return obj;
+
 }
 
-function arrayToList(rows) {
+function arrayToList(rows){
+
     return rows
-        .filter(row => row[1])
-        .map(row => row[1]);
+        .filter(row=>row[1])
+        .map(row=>row[1]);
+
+}
+
+/* ==========================================
+   GOOGLE DRIVE
+========================================== */
+
+function driveLogo(id){
+    return `https://lh3.googleusercontent.com/d/${id}=w200`;
+
+}
+
+function driveImage(id){
+    return `https://lh3.googleusercontent.com/d/${id}=w2000`;
+
+}
+
+function driveImages(id){
+    return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
+
+}
+
+
+function extractDriveId(value){
+
+    if(!value) return "";
+
+    if(!value.includes("http"))
+        return value.trim();
+
+    let match = value.match(/\/d\/([a-zA-Z0-9_-]+)/);
+
+    if(match) return match[1];
+
+    match = value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+
+    if(match) return match[1];
+
+    return value.trim();
+
+}
+
+/* ==========================================
+   NAVBAR & FOOTER
+========================================== */
+
+async function loadNavFooter(){
+
+    const rows = await getData("navfooter");
+
+    // ==========================
+    // NAVBAR
+    // ==========================
+
+    const logo = document.getElementById("logo-sekolah");
+
+    const logoId = extractDriveId(rows?.[2]?.[1]);
+
+    if (logoId) {
+        logo.src = driveImage(logoId);
+    }
+
+    document.getElementById("nama-brand").textContent =
+        rows[2]?.[2] || "";
+
+    document.getElementById("motto-brand").textContent =
+        rows[2]?.[3] || "";
+
+    // ==========================
+    // FOOTER
+    // ==========================
+
+    document.getElementById("footer-title").textContent =
+        rows[5]?.[1] || "";
+
+    document.getElementById("footer-address").textContent =
+        rows[5]?.[2] || "";
+
+    document.getElementById("footer-copy").textContent =
+        rows[5]?.[4] || "";
+
+    document.getElementById("footer-phone").textContent =
+        rows[5]?.[5] || "";
+
+    document.getElementById("footer-email").textContent =
+        rows[5]?.[6] || "";
+
+    document.getElementById("facebook-link").href =
+        rows[6]?.[1] || "#";
+
+    document.getElementById("instagram-link").href =
+        rows[6]?.[2] || "#";
+
+    document.getElementById("youtube-link").href =
+        rows[6]?.[4] || "#";
+
 }
 
 /* ==========================================
    HERO
 ========================================== */
 
-function driveLogo(id){
-    return `https://lh3.googleusercontent.com/d/${id}=w200`;
-}
+async function loadHero(){
 
-function driveImage(id){
-    return `https://lh3.googleusercontent.com/d/${id}=w2000`;
-}
+    const rows = await getData("homehero");
 
-
-function extractDriveId(url) {
-    if (!url) return "";
-
-    // Jika sudah berupa ID
-    if (!url.includes("http")) return url;
-
-    const match = url.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) return match[1];
-
-    const params = new URL(url).searchParams;
-    return params.get("id") || "";
-}
-
-function extractDriveId(value) {
-    if (!value) return "";
-
-    // Jika sudah berupa ID
-    if (!value.includes("http")) return value.trim();
-
-    // Format: .../file/d/ID/view
-    let match = value.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) return match[1];
-
-    // Format: ...?id=ID
-    match = value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    if (match) return match[1];
-
-    return value.trim();
-}
-
-
-async function loadNavFooter(){
-
-    const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:G20?key=${API_KEY}`;
-
-    const res=await fetch(url);
-
-    const data=await res.json();
-
-    const rows=data.values || [];
-
-    // ========= NAVBAR =========
-
-    const logoId = extractDriveId(rows[2][1]);
-    document.getElementById("logo-sekolah").src = driveImage(logoId);
-    
-    const brand=rows[2][2];
-    const motto=rows[2][3];
-
-    document.getElementById("logo-sekolah").src = driveImage(logoId);
-
-    document.getElementById("nama-brand").textContent=brand;
-
-    document.getElementById("motto-brand").textContent=motto;
-
-    // ========= FOOTER =========
-
-    document.getElementById("footer-title").textContent=rows[5][1];
-
-    document.getElementById("footer-address").textContent=rows[5][2];
-
-    document.getElementById("footer-copy").textContent=rows[5][4];
-
-    document.getElementById("footer-phone").textContent=rows[5][5];
-
-    document.getElementById("footer-email").textContent=rows[5][6];
-
-    document.getElementById("facebook-link").href=rows[6][1];
-
-    document.getElementById("instagram-link").href=rows[6][2];
-
-    document.getElementById("youtube-link").href=rows[6][4];
-
-}
-
-
-async function loadHero() {
-    const hero = arrayToObject(
-        await getSheet("Home!D3:E6")
-    );
+    const hero = arrayToObject(rows);
 
     document.getElementById("hero-school").textContent =
         hero["Sekolah"] || "";
@@ -416,75 +397,134 @@ async function loadHero() {
         <i class="fa-solid fa-clipboard-check"></i>
         ${hero["Tombol Mulai"] || ""}
     `;
+
 }
 
 /* ==========================================
    ABOUT
 ========================================== */
 
-async function loadAbout() {
-    const about = arrayToObject(
-        await getSheet("Home!G3:H6")
-    );
+async function loadAbout(){
 
-    const tujuan = arrayToList(
-        await getSheet("Home!J3:K10")
-    );
+    const data = await getData("home");
 
-    const sasaran = arrayToList(
-        await getSheet("Home!M3:N10")
-    );
+    const about =
+    arrayToObject(data.about);
+
+
+    const tujuan =
+    arrayToList(data.tujuan);
+
+
+    const sasaran =
+    arrayToList(data.sasaran);
+
 
     const prinsip =
-        (await getSheet("Home!P3:P3"))[0]?.[0] || "";
+    data.prinsip?.[0]?.[0] || "";
+
 
     const kontak =
-        (await getSheet("Home!R3:R3"))[0]?.[0] || "";
+    data.kontak?.[0]?.[0] || "";
+
+
 
     document.getElementById("about").innerHTML = `
+
         <div class="title">
-            <h2>${about["Judul"] || ""}</h2>
-            <p>${about["Tagline"] || ""}</p>
+
+            <h2>
+                ${about["Judul"] || ""}
+            </h2>
+
+            <p>
+                ${about["Tagline"] || ""}
+            </p>
+
         </div>
+
+
 
         <div class="about-content">
 
+
             <span class="tagline">
+
                 "${about["Tagline"] || ""}"
+
             </span>
 
+
+
             <p>
+
                 ${about["Deskripsi Tagline"] || ""}
+
             </p>
+
+
 
             <h3>Tujuan</h3>
 
+
             <ul>
-                ${tujuan.map(item => `<li>${item}</li>`).join("")}
+
+                ${tujuan
+                .map(item=>`<li>${item}</li>`)
+                .join("")}
+
             </ul>
+
+
 
             <h3>Sasaran</h3>
 
+
             <ul>
-                ${sasaran.map(item => `<li>${item}</li>`).join("")}
+
+                ${sasaran
+                .map(item=>`<li>${item}</li>`)
+                .join("")}
+
             </ul>
+
+
 
             <h3>Prinsip Program</h3>
 
+
             <div class="info-box">
+
                 ${prinsip}
+
             </div>
+
+
 
             <div class="contact-box">
+
                 <i class="fa-solid fa-phone"></i>
+
+
                 <span>
+
                     Informasi Layanan :
-                    <strong>${kontak}</strong>
+
+                    <strong>
+                        ${kontak}
+                    </strong>
+
                 </span>
+
+
             </div>
 
+
         </div>
+
     `;
+
+
 }
 
 /* ==========================================
@@ -493,63 +533,103 @@ async function loadAbout() {
 
 async function loadSlider() {
 
-    const rows = await getSheet("Home!B3:B20");
+    const rows = await getData("homeslider");
 
     const slider = document.getElementById("slider");
 
     const defaultSlides = [
+
         "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png",
+
         "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiXq7n1KX9tDS9ZMgU26jhyirJJ97V8UX7kcx3T3nOg0Ntm9uk0fuKPLiELUGygqedBh_WFo2Eb5mYhz4eh3Lh0xiYy0qiTaHI9Ixj-AcP3o60YJV6TFUg0kp5BXTJ3DtsVELbhmzxLxeuVR2gUOeT3qg-HddOQeaP_IqdTK50sle5goTzdhApeHL3amoA/s400/abk2.png",
+
         "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEjmyq_BjGp6Bgxid9t7w4HL9WYfnN0JgvioBQ7jxmatQMZxZhYFYLHsSbb2pya_Umm7DLCnUC13BahIt6ld1sxMDKY-SdDzB6XobG1Qopro4o8Fr1txeiCSwVZZwbwS2sBBWnbRRBy_EQB6FMzE0eRTyomRJLpmFnXf6OUDA7F8tByUAx2UsH9lJW4rBBU/s400/abk3.png"
+
     ];
 
-    slider.innerHTML = "";
+
+    slider.innerHTML="";
+
 
     const images = rows
-    .filter(row => row[0])
-    .map(row => {
+
+    .filter(row=>row[0])
+
+    .map(row=>{
+
         const id = extractDriveId(row[0]);
-        return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
+
+        return driveImages(id);
+
     });
 
-    // Jika tidak ada data dari sheet
-    if(images.length === 0){
+
+
+    // jika kosong gunakan default
+
+    if(images.length===0){
+
 
         slider.innerHTML = defaultSlides.map((img,index)=>`
-            <div class="slide ${index===0 ? "active" : ""}"
-                 style="background-image:url('${img}')">
+
+            <div class="slide ${index===0 ? "active":""}"
+
+            style="background-image:url('${img}')">
+
             </div>
+
         `).join("");
 
+
         startSlider();
+
         return;
+
     }
 
-    // Cek setiap gambar
+
+
     for(let i=0;i<images.length;i++){
+
 
         const url = images[i];
 
+
         const img = new Image();
+
 
         const finalUrl = await new Promise(resolve=>{
 
-            img.onload = ()=>resolve(url);
 
-            img.onerror = ()=>{
+            img.onload=()=>resolve(url);
 
-                resolve(defaultSlides[i % defaultSlides.length]);
+
+            img.onerror=()=>{
+
+                resolve(
+                    defaultSlides[
+                        i % defaultSlides.length
+                    ]
+                );
 
             };
 
-            img.src = url;
+
+            img.src=url;
+
 
         });
 
+
+
         slider.innerHTML += `
-            <div class="slide ${i===0 ? "active" : ""}"
-                 style="background-image:url('${finalUrl}')">
+
+            <div class="slide ${i===0 ? "active":""}"
+
+            style="background-image:url('${finalUrl}')">
+
             </div>
+
         `;
 
     }
@@ -562,169 +642,366 @@ async function loadSlider() {
    START SLIDER
 ========================================== */
 
-function startSlider() {
-    const slides = document.querySelectorAll(".slide");
-    if (slides.length <= 1) return;
-    current = 0;
-    setInterval(() => {
+function startSlider(){
 
-        slides[current].classList.remove("active");
+    const slides =
+    document.querySelectorAll(".slide");
 
-        current = (current + 1) % slides.length;
+    if(slides.length<=1)
+        return;
 
-        slides[current].classList.add("active");
+    current=0;
 
-    }, 5000);
+    setInterval(()=>{
+
+        slides[current]
+        .classList.remove("active");
+
+        current =
+        (current+1)
+        %
+        slides.length;
+
+        slides[current]
+        .classList.add("active");
+
+    },5000);
+
 
 }
 
-function driveImages(id){
-    return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
-}
+
+/* ==========================================
+   BERITA
+========================================== */
 
 async function loadNews(){
 
     try{
 
-        const rows = await getSheet("Berita!A1:Z100");
+        const rows = await getData("berita");
 
-        const container = document.getElementById("news-grid");
+        const container =
+        document.getElementById("news-grid");
 
-        container.innerHTML = "";
+        container.innerHTML="";
 
-        let berita = [];
+        let berita=[];
 
-        // Mulai kolom B
+
         for(let col=1; col<rows[0].length; col++){
 
-            const status = (rows[1]?.[col] || "").trim();
 
-            if(status !== "Aktif") continue;
+            const status =
+            (rows[1]?.[col] || "")
+            .trim();
 
-            const tanggal = rows[3]?.[col] || "";
-            const thumbnail = extractDriveId(rows[4]?.[col] || "");
-            const judul = rows[5]?.[col] || "";
 
-            // Ambil paragraf pertama sebagai deskripsi
-            let deskripsi = "";
 
-            for(let r=6; r<rows.length; r++){
+            if(status !== "Aktif")
+                continue;
 
-                const value = (rows[r]?.[col] || "").trim();
 
-                if(!value) continue;
 
-                // Lewati jika merupakan ID gambar
-                if(/^[A-Za-z0-9_-]{20,}$/.test(value)) continue;
+            const tanggal =
+            rows[3]?.[col] || "";
 
-                deskripsi = value;
+
+
+            const thumbnail =
+            extractDriveId(
+                rows[4]?.[col] || ""
+            );
+
+
+
+            const judul =
+            rows[5]?.[col] || "";
+
+
+
+            let deskripsi="";
+
+
+
+            for(let r=6;r<rows.length;r++){
+
+
+                const value =
+                (rows[r]?.[col] || "")
+                .trim();
+
+
+
+                if(!value)
+                    continue;
+
+
+
+                if(/^[A-Za-z0-9_-]{20,}$/.test(value))
+                    continue;
+
+
+
+                deskripsi=value;
+
                 break;
+
 
             }
 
-            const id = rows[0]?.[col] || "";
+
 
             berita.push({
-                id,
+
+                id:rows[0]?.[col] || "",
+
                 tanggal,
+
                 thumbnail,
+
                 judul,
+
                 deskripsi
+
             });
+
 
         }
 
-        // Urutkan berdasarkan tanggal terbaru
-        berita.sort((a,b)=>new Date(b.tanggal)-new Date(a.tanggal));
 
-        // Ambil 3 berita
-        berita.slice(0,3).forEach((item,index)=>{
 
-            let text = item.deskripsi;
+        berita.sort((a,b)=>
+            new Date(b.tanggal)
+            -
+            new Date(a.tanggal)
+        );
 
-            if(text.length > 50){
 
-                text = text.substring(0,50) + "...";
+
+        berita
+        .slice(0,3)
+        .forEach(item=>{
+
+
+            let text=item.deskripsi;
+
+
+
+            if(text.length>50){
+
+                text =
+                text.substring(0,50)
+                +"...";
 
             }
 
+
+
             container.innerHTML += `
 
-                <div class="news-card">
 
-                    <a href="berita.html?id=${item.id}">
+            <div class="news-card">
 
-                        <img src="${driveImages(item.thumbnail)}"
-                             alt="${item.judul}">
+
+                <a href="berita.html?id=${item.id}">
+
+
+                    <img src="${driveImages(item.thumbnail)}"
+
+                    alt="${item.judul}">
+
+
+                </a>
+
+
+
+                <div class="content">
+
+
+                    <a href="berita.html?id=${item.id}"
+
+                    class="news-title">
+
+
+                        <h3>${item.judul}</h3>
+
 
                     </a>
 
-                    <div class="content">
 
-                       <a href="berita.html?id=${item.id}" class="news-title">
 
-                            <h3>${item.judul}</h3>
+                    <p>${text}</p>
 
-                        </a>
-
-                        <p>${text}</p>
-
-                    </div>
 
                 </div>
 
+
+            </div>
+
+
             `;
+
 
         });
 
+
+
     }catch(err){
+
 
         console.error(err);
 
+
     }
 
+
 }
+
+
+
+
+/* ==========================================
+   WHY US
+========================================== */
 
 async function loadWhyUs(){
 
-    // Deskripsi
-    const desc = (await getSheet("Home!T2:T2"))[0]?.[0] || "";
+    const data = await getData("whyus");
 
-    document.getElementById("why-description").textContent = desc;
+    const desc =
+    data.desc || "";
 
-    // Statistik
-    const stats = await getSheet("Home!T3:U6");
+    document
+    .getElementById("why-description")
+    .textContent=desc;
 
-    const container = document.getElementById("stats-grid");
 
-    container.innerHTML = stats.map(row => `
+
+    const stats =
+    data.stats || [];
+
+
+
+    document
+    .getElementById("stats-grid")
+    .innerHTML = stats.map(row=>`
+
         <div class="stat-box">
-            <span class="number">${row[1] || ""}</span>
-            <span class="label">${row[0] || ""}</span>
+
+            <span class="number">
+                ${row[1] || ""}
+            </span>
+
+            <span class="label">
+                ${row[0] || ""}
+            </span>
+
         </div>
+
     `).join("");
+
+
 }
+
+
 
 /* ==========================================
    LOAD WEBSITE
 ========================================== */
-async function loadWebsite() {
-    try {
 
-        await loadNavFooter();
-        await loadHero();
-        await loadAbout();
-        await loadWhyUs();
+async function loadWebsite(){
+
+    try{
+
+        await Promise.all([
+
+            loadNavFooter(),
+
+            loadHero(),
+
+            loadAbout(),
+
+            loadWhyUs(),
+
+            loadNews()
+
+        ]);
+
+
+        // slider jalan setelah konten utama selesai
         await loadSlider();
-        await loadNews();
 
-    } catch (error) {
+
+    }catch(error){
 
         console.error(error);
 
     }
+
 }
-document.addEventListener("DOMContentLoaded", loadWebsite);
+
+function showLoading(){
+
+    if(sessionStorage.getItem("loaded")){
+        return;
+    }
+
+    document
+        .getElementById("loadingFloat")
+        .classList.remove("hide");
+
+
+    document
+        .getElementById("hero-school")
+        .classList.add("hide");
+
+
+    document
+        .getElementById("hero-button")
+        .classList.add("hide");
+
+}
+
+
+function hideLoading(){
+
+    document
+        .getElementById("loadingFloat")
+        .classList.add("hide");
+
+
+    document
+        .getElementById("hero-school")
+        .classList.remove("hide");
+
+
+    document
+        .getElementById("hero-button")
+        .classList.remove("hide");
+
+
+    sessionStorage.setItem("loaded","true");
+
+}
+
+document.addEventListener("DOMContentLoaded", async ()=>{
+
+    showLoading();
+
+    try{
+
+        await loadWebsite();
+
+    }
+
+    finally{
+
+        hideLoading();
+
+    }
+
+});
 </script>
 </body>
 </html>
