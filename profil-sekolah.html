@@ -82,6 +82,10 @@
             line-height:1.8;
         }
 
+        .page-header.loading{
+            opacity:0;
+        }
+
         @media(max-width:768px){
             .profile-grid{
                 grid-template-columns:1fr;
@@ -95,7 +99,16 @@
 
 </head>
 <body>
+<div id="loadingFloat" class="loading-float">
+    <div class="dots-loader">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
 
+    <div class="loading-text"></div>
+</div>
 <header>
 
 <div class="container nav">
@@ -292,68 +305,34 @@
 
 </footer>
 
+<script src="config.js"></script>
 <script src="script.js"></script>
 <script>
-/* ==============================
-   PROTEKSI WEBSITE
-============================== */
-
-// Disable klik kanan
-document.addEventListener("contextmenu", function(e){
-    e.preventDefault();
-});
-
-
-// Disable shortcut Inspect Element
-document.addEventListener("keydown", function(e){
-
-    // F12
-    if(e.key === "F12"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + I (Inspect)
-    if(e.ctrlKey && e.shiftKey && e.key === "I"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + J (Console)
-    if(e.ctrlKey && e.shiftKey && e.key === "J"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + C (Element picker)
-    if(e.ctrlKey && e.shiftKey && e.key === "C"){
-        e.preventDefault();
-    }
-
-    // Ctrl + U (View Source)
-    if(e.ctrlKey && e.key === "u"){
-        e.preventDefault();
-    }
-
-});
-
-
-// Disable copy
-document.addEventListener("copy", function(e){
-    e.preventDefault();
-});
-
-
-// Disable select text
-document.addEventListener("selectstart", function(e){
-    e.preventDefault();
-});
-
-</script>
-<script>
-const API_KEY = "AIzaSyAwSuM68_HlFIUxvR1HOmlIwo4pMKEnHU0";
-const SHEET_ID = "1P_Tz_MT08L-UQel8Rq3SaYd-jhFKb7knSHOJqmv_8-E";
-
-function driveLogo(id){
-    return `https://lh3.googleusercontent.com/d/${id}=w200`;
+const nav = performance.getEntriesByType("navigation")[0];
+if(nav && nav.type === "reload"){
+    sessionStorage.clear();
 }
+
+async function getData(page){
+
+    const key = "cache_" + page;
+
+    const cache = sessionStorage.getItem(key);
+
+    if(cache){
+        return JSON.parse(cache);
+    }
+
+    const data = await fetch(`${API_URL}?page=${page}`)
+        .then(res => res.json());
+
+    sessionStorage.setItem(key, JSON.stringify(data));
+
+    return data;
+}
+/* ==========================
+   UTILITAS
+========================== */
 
 function driveImage(id){
     return `https://lh3.googleusercontent.com/d/${id}=w2000`;
@@ -363,175 +342,141 @@ function driveImages(id){
     return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
 }
 
-function extractDriveId(value) {
-    if (!value) return "";
+function extractDriveId(value){
 
-    // Jika sudah berupa ID
-    if (!value.includes("http")) return value.trim();
+    if(!value) return "";
 
-    // Format: .../file/d/ID/view
-    let match = value.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) return match[1];
+    if(!value.includes("http")) return value.trim();
 
-    // Format: ...?id=ID
-    match = value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    if (match) return match[1];
+    let match=value.match(/\/d\/([a-zA-Z0-9_-]+)/);
+
+    if(match) return match[1];
+
+    match=value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+
+    if(match) return match[1];
 
     return value.trim();
+
 }
 
+/* ==========================
+   NAVBAR & FOOTER
+========================== */
 
 async function loadNavFooter(){
 
-    const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:G20?key=${API_KEY}`;
+    try{
 
-    const res=await fetch(url);
+        const rows = await getData("navfooter");
 
-    const data=await res.json();
+        const logoId=extractDriveId(rows[2][1]);
 
-    const rows=data.values || [];
+        document.getElementById("logo-sekolah").src=driveImage(logoId);
 
-    // ========= NAVBAR =========
+        document.getElementById("nama-brand").textContent=rows[2][2] || "";
 
-    const logoId = extractDriveId(rows[2][1]);
-    document.getElementById("logo-sekolah").src = driveImage(logoId);
-    const brand=rows[2][2];
-    const motto=rows[2][3];
-    const bgId = extractDriveId(rows[2][4] || "");
+        document.getElementById("motto-brand").textContent=rows[2][3] || "";
 
-    document.getElementById("logo-sekolah").src = driveImage(logoId);
+        const bgId=extractDriveId(rows[2][4] || "");
 
-    document.getElementById("nama-brand").textContent=brand;
+        const DEFAULT_HEADER="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png";
 
-    document.getElementById("motto-brand").textContent=motto;
+        const bgUrl=driveImages(bgId);
 
-    const DEFAULT_HEADER =
-    "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png";
-
-    const bgUrl = driveImages(bgId);
-
-    const testImg = new Image();
-
-    testImg.onload = function(){
-
-        document.getElementById("page-header").style.background = `
+        const bgStyle = `
             linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
             url(${bgUrl}) center/cover no-repeat
         `;
 
-    }; 
+        document.getElementById("page-header").style.background = bgStyle;
 
-    testImg.onerror = function(){
+        const img = new Image();
 
-        document.getElementById("page-header").style.background = `
-            linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-            url(${DEFAULT_HEADER}) center/cover no-repeat
-        `;
+        img.onerror = () => {
 
-    };
+            document.getElementById("page-header").style.background = `
+                linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+                url(${DEFAULT_HEADER}) center/cover no-repeat
+            `;
 
-    testImg.src = bgUrl;
+        };
 
-    // ========= FOOTER =========
+        img.src = bgUrl;
 
-    document.getElementById("footer-title").textContent=rows[5][1];
+        document.getElementById("footer-title").textContent=rows[5][1] || "";
 
-    document.getElementById("footer-address").textContent=rows[5][2];
+        document.getElementById("footer-address").textContent=rows[5][2] || "";
 
-    document.getElementById("footer-copy").textContent=rows[5][4];
+        document.getElementById("footer-copy").textContent=rows[5][4] || "";
 
-    document.getElementById("footer-phone").textContent=rows[5][5];
+        document.getElementById("footer-phone").textContent=rows[5][5] || "";
 
-    document.getElementById("footer-email").textContent=rows[5][6];
+        document.getElementById("footer-email").textContent=rows[5][6] || "";
 
-    document.getElementById("facebook-link").href=rows[6][1];
+        document.getElementById("facebook-link").href=rows[6][1] || "#";
 
-    document.getElementById("instagram-link").href=rows[6][2];
+        document.getElementById("instagram-link").href=rows[6][2] || "#";
 
-    document.getElementById("youtube-link").href=rows[6][4];
+        document.getElementById("youtube-link").href=rows[6][4] || "#";
+
+    }catch(err){
+
+        console.error(err);
+
+    }
 
 }
+
+/* ==========================
+   PROFIL SEKOLAH
+========================== */
 
 async function loadProfile(){
 
     try{
 
-        const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Profil_Sekolah!A1:E100?key=${API_KEY}`;
+        const rows = await getData("profil");
 
-        const res=await fetch(url);
-        const data=await res.json();
-
-        const rows=data.values||[];
-
-        /* ==========================
-           HEADER
-        ========================== */
-
-        document.getElementById("page-title").textContent =
+        document.getElementById("page-title").textContent=
             rows[0]?.[2] || "";
 
-        document.getElementById("page-subtitle").textContent =
+        document.getElementById("page-subtitle").textContent=
             rows[1]?.[2] || "";
 
         const about=document.getElementById("about-school");
+
         const image=document.getElementById("school-image");
+
         const vision=document.getElementById("school-vision");
+
         const mission=document.getElementById("school-mission");
 
         about.innerHTML=`
-            <h2>${rows[2]?.[2]||""}</h2>
+            <h2>${rows[2]?.[2] || ""}</h2>
         `;
 
         vision.textContent="";
+
         mission.innerHTML="";
 
         let imageLoaded=false;
-        let visionLoaded=false;
 
-        /* ==========================
-           DATA MULAI ROW 5
-        ========================== */
+        let visionLoaded=false;
 
         rows.slice(4).forEach(row=>{
 
-            /* ----------------------
-               GAMBAR
-            ---------------------- */
-
             if(!imageLoaded && row[1]){
 
-                let value=row[1].trim();
-                let id=value;
+                const id=extractDriveId(row[1]);
 
-                try{
+                const imageUrl = driveImages(id);
 
-                    if(value.includes("drive.google.com")){
-
-                        const url=new URL(value);
-
-                        if(url.pathname.includes("/d/")){
-
-                            id=url.pathname.split("/d/")[1].split("/")[0];
-
-                        }else{
-
-                            id=url.searchParams.get("id")||value;
-
-                        }
-
-                    }
-
-                }catch(e){}
-
-                image.src=`https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
+                image.src = imageUrl;
 
                 imageLoaded=true;
 
             }
-
-            /* ----------------------
-               TENTANG SEKOLAH
-            ---------------------- */
 
             if(row[2]){
 
@@ -539,26 +484,17 @@ async function loadProfile(){
 
             }
 
-            /* ----------------------
-               VISI
-            ---------------------- */
-
             if(!visionLoaded && row[3]){
 
                 vision.textContent=row[3];
+
                 visionLoaded=true;
 
             }
 
-            /* ----------------------
-               MISI
-            ---------------------- */
-
             if(row[4]){
 
-                mission.innerHTML+=`
-                    <li>${row[4]}</li>
-                `;
+                mission.innerHTML+=`<li>${row[4]}</li>`;
 
             }
 
@@ -572,9 +508,57 @@ async function loadProfile(){
 
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadNavFooter();
-    loadProfile();
+function showLoading(){
+
+    // Kalau data sudah pernah dimuat, tidak tampil loading lagi
+    if(sessionStorage.getItem("loaded")){
+        return;
+    }
+
+    document
+        .getElementById("loadingFloat")
+        .classList.remove("hide");
+}
+
+function hideLoading(){
+
+    document
+        .getElementById("loadingFloat")
+        .classList.add("hide");
+
+    sessionStorage.setItem("loaded","true");
+}
+
+/* ==========================
+   START
+========================== */
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    const header = document.getElementById("page-header");
+
+    header.classList.add("loading");
+
+    showLoading();
+
+    try{
+
+        await loadNavFooter();
+
+        await loadProfile();
+
+    }catch(err){
+
+        console.error(err);
+
+    }finally{
+
+        hideLoading();
+
+        header.classList.remove("loading");
+
+    }
+
 });
 </script>
 </body>
