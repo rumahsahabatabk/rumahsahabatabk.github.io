@@ -39,6 +39,9 @@
     opacity:.95;
 }
 
+.page-header.loading{
+    opacity:0;
+}
 /* ===========================
    GALLERY
 =========================== */
@@ -405,7 +408,16 @@
 
 <body>
 
-    <!-- HEADER -->
+    <div id="loadingFloat" class="loading-float">
+    <div class="dots-loader">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <div class="loading-text"></div>
+   </div>
 
     <header>
 
@@ -603,66 +615,32 @@
 
 </footer>
 
+<script src="config.js"></script>
 <script src="script.js"></script>
-<script>
-/* ==============================
-   PROTEKSI WEBSITE
-============================== */
-
-// Disable klik kanan
-document.addEventListener("contextmenu", function(e){
-    e.preventDefault();
-});
-
-
-// Disable shortcut Inspect Element
-document.addEventListener("keydown", function(e){
-
-    // F12
-    if(e.key === "F12"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + I (Inspect)
-    if(e.ctrlKey && e.shiftKey && e.key === "I"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + J (Console)
-    if(e.ctrlKey && e.shiftKey && e.key === "J"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + C (Element picker)
-    if(e.ctrlKey && e.shiftKey && e.key === "C"){
-        e.preventDefault();
-    }
-
-    // Ctrl + U (View Source)
-    if(e.ctrlKey && e.key === "u"){
-        e.preventDefault();
-    }
-
-});
-
-
-// Disable copy
-document.addEventListener("copy", function(e){
-    e.preventDefault();
-});
-
-
-// Disable select text
-document.addEventListener("selectstart", function(e){
-    e.preventDefault();
-});
-
-</script>
 <script type="text/javascript">
-const API_KEY = "AIzaSyAwSuM68_HlFIUxvR1HOmlIwo4pMKEnHU0";
-const SHEET_ID = "1P_Tz_MT08L-UQel8Rq3SaYd-jhFKb7knSHOJqmv_8-E";
+const nav = performance.getEntriesByType("navigation")[0];
+if(nav && nav.type === "reload"){
+    sessionStorage.clear();
+}
 
-const RANGE = "Dokumentasi!A6:K";
+async function getData(page){
+
+    const key = "cache_" + page;
+
+    const cache = sessionStorage.getItem(key);
+
+    if(cache){
+        return JSON.parse(cache);
+    }
+
+    const data = await fetch(`${API_URL}?page=${page}`)
+        .then(r => r.json());
+
+    sessionStorage.setItem(key, JSON.stringify(data));
+
+    return data;
+
+}
 
 const pagination = document.getElementById("pagination");
 
@@ -678,26 +656,24 @@ const popupGallery = document.getElementById("popupGallery");
 const lightbox = document.getElementById("lightbox");
 const lightboxImage = document.getElementById("lightboxImage");
 
-document.getElementById("closePopup").onclick = () => {
-    popup.style.display = "none";
+document.getElementById("closePopup").onclick = () => popup.style.display = "none";
+document.getElementById("closeLightbox").onclick = () => lightbox.style.display = "none";
+
+popup.onclick = e=>{
+    if(e.target===popup) popup.style.display="none";
 };
 
-document.getElementById("closeLightbox").onclick = () => {
-    lightbox.style.display = "none";
+lightbox.onclick = e=>{
+    if(e.target===lightbox) lightbox.style.display="none";
 };
 
-popup.onclick = function(e){
-    if(e.target==popup){
-        popup.style.display="none";
-    }
-}
+/* ==========================================
+   UTILITAS
+========================================== */
 
-lightbox.onclick = function(e){
-    if(e.target==lightbox){
-        lightbox.style.display="none";
-    }
+function driveLogo(id){
+    return `https://lh3.googleusercontent.com/d/${id}=w200`;
 }
-
 
 function driveImage(id){
     return `https://lh3.googleusercontent.com/d/${id}=w2000`;
@@ -707,210 +683,216 @@ function driveImages(id){
     return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
 }
 
-function driveLogo(id){
-    return `https://drive.google.com/thumbnail?id=${id}&sz=w200`;
-}
+function extractDriveId(value){
 
-function extractDriveId(value) {
-    if (!value) return "";
+    if(!value) return "";
 
-    // Jika sudah berupa ID
-    if (!value.includes("http")) return value.trim();
+    if(!value.includes("http")) return value.trim();
 
-    // Format: .../file/d/ID/view
-    let match = value.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) return match[1];
+    let match=value.match(/\/d\/([A-Za-z0-9_-]+)/);
 
-    // Format: ...?id=ID
-    match = value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    if (match) return match[1];
+    if(match) return match[1];
+
+    match=value.match(/[?&]id=([A-Za-z0-9_-]+)/);
+
+    if(match) return match[1];
 
     return value.trim();
+
 }
+
+/* ==========================================
+   NAVBAR & FOOTER
+========================================== */
 
 async function loadNavFooter(){
 
-    const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:G20?key=${API_KEY}`;
+    try{
 
-    const res=await fetch(url);
+        const rows = await getData("navfooter");
 
-    const data=await res.json();
+        const logoId=extractDriveId(rows[2]?.[1]||"");
+        const bgId=extractDriveId(rows[2]?.[4]||"");
 
-    const rows=data.values || [];
+        document.getElementById("logo-sekolah").src=driveImage(logoId);
 
-    // ========= NAVBAR =========
+        document.getElementById("nama-brand").textContent=rows[2]?.[2]||"";
+        document.getElementById("motto-brand").textContent=rows[2]?.[3]||"";
 
-    const logoId = extractDriveId(rows[2]?.[1] || "");
-    const brand  = rows[2]?.[2] || "";
-    const motto  = rows[2]?.[3] || "";
-    const bgId   = extractDriveId(rows[2]?.[4] || "");
+        const DEFAULT_HEADER="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png";
 
-    document.getElementById("logo-sekolah").src = driveImage(logoId);
+        const bgUrl=driveImages(bgId);
 
-    document.getElementById("nama-brand").textContent = brand;
+        const img=new Image();
 
-    document.getElementById("motto-brand").textContent = motto;
+        img.onload=()=>{
 
-    const DEFAULT_HEADER =
-    "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png";
+            const header=document.getElementById("page-header");
 
-    const bgUrl = driveImages(bgId);
+            if(header){
 
-    const testImg = new Image();
+                header.style.background=`
+                    linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+                    url(${bgUrl}) center/cover no-repeat
+                `;
 
-    testImg.onload = function(){
+            }
 
-        const header = document.getElementById("page-header");
+        };
 
-        if(header){
-            header.style.background = `
-                linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-                url(${bgUrl}) center/cover no-repeat
-            `;
-        }
+        img.onerror=()=>{
 
-    };
+            const header=document.getElementById("page-header");
 
-    testImg.onerror = function(){
+            if(header){
 
-        const header = document.getElementById("page-header");
+                header.style.background=`
+                    linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+                    url(${DEFAULT_HEADER}) center/cover no-repeat
+                `;
 
-        if(header){
-            header.style.background = `
-                linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-                url(${DEFAULT_HEADER}) center/cover no-repeat
-            `;
-        }
+            }
 
-    };
+        };
 
-    testImg.src = bgUrl;
+        img.src=bgUrl;
 
-    // ========= FOOTER =========
+        document.getElementById("footer-title").textContent=rows[5]?.[1]||"";
+        document.getElementById("footer-address").textContent=rows[5]?.[2]||"";
+        document.getElementById("footer-copy").textContent=rows[5]?.[4]||"";
+        document.getElementById("footer-phone").textContent=rows[5]?.[5]||"";
+        document.getElementById("footer-email").textContent=rows[5]?.[6]||"";
 
-    document.getElementById("footer-title").textContent =
-        rows[5]?.[1] || "";
+        document.getElementById("facebook-link").href=rows[6]?.[1]||"#";
+        document.getElementById("instagram-link").href=rows[6]?.[2]||"#";
+        document.getElementById("youtube-link").href=rows[6]?.[4]||"#";
 
-    document.getElementById("footer-address").textContent =
-        rows[5]?.[2] || "";
+    }catch(err){
 
-    document.getElementById("footer-copy").textContent =
-        rows[5]?.[4] || "";
+        console.error(err);
 
-    document.getElementById("footer-phone").textContent=rows[5][5];
-
-    document.getElementById("footer-email").textContent=rows[5][6];
-
-    document.getElementById("facebook-link").href =
-        rows[6]?.[1] || "#";
-
-    document.getElementById("instagram-link").href =
-        rows[6]?.[2] || "#";
-
-    document.getElementById("youtube-link").href =
-        rows[6]?.[4] || "#";
+    }
 
 }
 
-async function loadHeader() {
+/* ==========================================
+   HEADER
+========================================== */
 
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Dokumentasi!A1:C4?key=${API_KEY}`;
+async function loadHeader(){
 
-    const res = await fetch(url);
-    const data = await res.json();
+    try{
 
-    const rows = data.values || [];
+        const rows = await getData("dokumentasiheader");
 
-    const obj = {};
+        const obj={};
 
-    rows.forEach(r => {
-        obj[r[0]] = r[2] || "";
-    });
+        rows.forEach(r=>{
 
-    document.querySelector(".page-header h1").textContent =
-        obj["Judul Halaman"] || "";
+            obj[r[0]]=r[2]||"";
 
-    document.querySelector(".page-header p").textContent =
-        obj["Sub Judul Halaman"] || "";
+        });
 
-    document.querySelector(".gallery .title h2").textContent =
-        obj["Judul Konten"] || "";
+        document.querySelector(".page-header h1").textContent=obj["Judul Halaman"]||"";
 
-    document.querySelector(".gallery .title p").textContent =
-        obj["Sub Judul Konten"] || "";
-}
+        document.querySelector(".page-header p").textContent=obj["Sub Judul Halaman"]||"";
 
-async function loadAlbum() {
+        document.querySelector(".gallery .title h2").textContent=obj["Judul Konten"]||"";
 
-    const url = `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${RANGE}?key=${API_KEY}`;
+        document.querySelector(".gallery .title p").textContent=obj["Sub Judul Konten"]||"";
 
-    const res = await fetch(url);
-    const data = await res.json();
+    }catch(err){
 
-    allAlbums = data.values || [];
+        console.error(err);
 
-    renderAlbums();
+    }
 
 }
 
+/* ==========================================
+   ALBUM
+========================================== */
 
-function renderAlbums() {
+async function loadAlbum(){
 
-    albumGrid.innerHTML = "";
+    try{
 
-    const start = (currentPage - 1) * perPage;
-    const end = start + perPage;
+        const rows = await getData("dokumentasi");
 
-    const currentAlbums = allAlbums.slice(start, end);
+        allAlbums = rows.filter(row => {
 
-    currentAlbums.forEach(row => {
+            if (!row) return false;
 
-        const title = row[1] || "";
+            // Harus punya judul album
+            if (!row[1]) return false;
 
-        const images = [];
+            // Harus punya minimal 1 gambar
+            return row.slice(2).some(cell => cell && cell.toString().trim() !== "");
 
-        for (let i = 2; i < row.length; i++) {
+        });
 
-            const value = (row[i] || "").trim();
+        renderAlbums();
 
-            if (!value) continue;
+    }catch(err){
 
-            const id = extractDriveId(value);
+        console.error(err);
 
-            if (!id) continue;
+    }
 
-            images.push(
-                driveImages(id)
-            );
+}
+
+function renderAlbums(){
+
+    albumGrid.innerHTML="";
+
+    const start=(currentPage-1)*perPage;
+
+    const currentAlbums=allAlbums.slice(start,start+perPage);
+
+    currentAlbums.forEach(row=>{
+
+        const title=row[1]||"";
+
+        const images=[];
+
+        for(let i=2;i<row.length;i++){
+
+            const id=extractDriveId(row[i]||"");
+
+            if(id){
+
+                images.push(driveImages(id));
+
+            }
 
         }
 
-        if (images.length == 0) return;
+        if(images.length===0) return;
 
-        const card = document.createElement("div");
+        const card=document.createElement("div");
 
-        card.className = "album-card";
+        card.className="album-card";
 
-        card.innerHTML = `
+        card.innerHTML=`
             <img src="${images[0]}">
             <h3>${title}</h3>
         `;
 
-        card.onclick = function () {
+        card.onclick=()=>{
 
-            popupTitle.textContent = title;
+            popupTitle.textContent=title;
 
-            popupGallery.innerHTML = "";
+            popupGallery.innerHTML="";
 
-            images.forEach(img => {
+            images.forEach(img=>{
 
-                popupGallery.innerHTML += `
+                popupGallery.innerHTML+=`
                     <img src="${img}" onclick="showImage('${img}')">
                 `;
 
             });
 
-            popup.style.display = "block";
+            popup.style.display="block";
 
         };
 
@@ -922,80 +904,90 @@ function renderAlbums() {
 
 }
 
+function renderPagination(){
 
-function renderPagination() {
+    pagination.innerHTML="";
 
-    pagination.innerHTML = "";
+    const totalPages=Math.ceil(allAlbums.length/perPage);
 
-    const totalPages = Math.ceil(allAlbums.length / perPage);
+    if(totalPages<=1){
 
-    if (totalPages <= 1) {
-        pagination.style.display = "none";
+        pagination.style.display="none";
         return;
+
     }
 
-    pagination.style.display = "flex";
+    pagination.style.display="flex";
 
-    // ===========================
-    // PREV
-    // ===========================
+    const prev=document.createElement("button");
 
-    const prev = document.createElement("button");
-    prev.innerHTML = "&laquo; Prev";
-    prev.disabled = currentPage === 1;
+    prev.innerHTML="&laquo; Prev";
 
-    prev.onclick = () => {
-        if (currentPage > 1) {
+    prev.disabled=currentPage===1;
+
+    prev.onclick=()=>{
+
+        if(currentPage>1){
+
             currentPage--;
             renderAlbums();
+
         }
+
     };
 
     pagination.appendChild(prev);
 
-    // ===========================
-    // NOMOR HALAMAN (maksimal 3)
-    // ===========================
+    let start=Math.max(1,currentPage-1);
 
-    let startPage = Math.max(1, currentPage - 1);
-    let endPage = Math.min(totalPages, startPage + 2);
+    let end=Math.min(totalPages,start+2);
 
-    // supaya selalu tampil 3 tombol jika memungkinkan
-    if (endPage - startPage < 2) {
-        startPage = Math.max(1, endPage - 2);
+    if(end-start<2){
+
+        start=Math.max(1,end-2);
+
     }
 
-    for (let i = startPage; i <= endPage; i++) {
+    for(let i=start;i<=end;i++){
 
-        const btn = document.createElement("button");
+        const btn=document.createElement("button");
 
-        btn.textContent = i;
+        btn.textContent=i;
 
-        if (i === currentPage) {
+        if(i===currentPage){
+
             btn.classList.add("active");
+
         }
 
-        btn.onclick = () => {
-            currentPage = i;
+        btn.onclick=()=>{
+
+            currentPage=i;
+
             renderAlbums();
+
         };
 
         pagination.appendChild(btn);
+
     }
 
-    // ===========================
-    // NEXT
-    // ===========================
+    const next=document.createElement("button");
 
-    const next = document.createElement("button");
-    next.innerHTML = "Next &raquo;";
-    next.disabled = currentPage === totalPages;
+    next.innerHTML="Next &raquo;";
 
-    next.onclick = () => {
-        if (currentPage < totalPages) {
+    next.disabled=currentPage===totalPages;
+
+    next.onclick=()=>{
+
+        if(currentPage<totalPages){
+
             currentPage++;
+
             renderAlbums();
+
         }
+
     };
 
     pagination.appendChild(next);
@@ -1009,10 +1001,54 @@ function showImage(src){
 
 }
 
+
+function showLoading(){
+
+    if(sessionStorage.getItem("loaded")){
+        return;
+    }
+
+    document
+        .getElementById("loadingFloat")
+        .classList.remove("hide");
+
+}
+
+
+function hideLoading(){
+
+    document
+        .getElementById("loadingFloat")
+        .classList.add("hide");
+
+    sessionStorage.setItem("loaded","true");
+
+}
+
+/* ==========================================
+   START
+========================================== */
+
 document.addEventListener("DOMContentLoaded", async () => {
-    await loadNavFooter();
-    await loadHeader();
-    await loadAlbum();
+
+    showLoading();
+
+    try{
+
+        await loadNavFooter();
+        await loadHeader();
+        await loadAlbum();
+
+    }catch(err){
+
+        console.error(err);
+
+    }finally{
+
+        hideLoading();
+
+    }
+
 });
 </script>
 
