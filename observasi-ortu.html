@@ -41,6 +41,10 @@ href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.
     opacity:.95;
 }
 
+.page-header.loading{
+    opacity:0;
+}
+
 .container h3{
     margin-bottom: 20px;
 }
@@ -160,7 +164,16 @@ href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.
 
 <body>
 
-    <!-- HEADER -->
+    <div id="loadingFloat" class="loading-float">
+    <div class="dots-loader">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <div class="loading-text"></div>
+    </div>
 
     <header>
 
@@ -245,7 +258,7 @@ href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.
             <h2>Data Hasil Observasi Orang Tua Murid</h2>
 
             <p>
-                Daftar hasil observasi orang tua murid terhadap peserta didik.
+                Daftar hasil observasi orang tua murid.
             </p>
 
         </div>
@@ -365,70 +378,39 @@ href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.
 <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
 
 <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
-<script>
-/* ==============================
-   PROTEKSI WEBSITE
-============================== */
-
-// Disable klik kanan
-document.addEventListener("contextmenu", function(e){
-    e.preventDefault();
-});
-
-
-// Disable shortcut Inspect Element
-document.addEventListener("keydown", function(e){
-
-    // F12
-    if(e.key === "F12"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + I (Inspect)
-    if(e.ctrlKey && e.shiftKey && e.key === "I"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + J (Console)
-    if(e.ctrlKey && e.shiftKey && e.key === "J"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + C (Element picker)
-    if(e.ctrlKey && e.shiftKey && e.key === "C"){
-        e.preventDefault();
-    }
-
-    // Ctrl + U (View Source)
-    if(e.ctrlKey && e.key === "u"){
-        e.preventDefault();
-    }
-
-});
-
-
-// Disable copy
-document.addEventListener("copy", function(e){
-    e.preventDefault();
-});
-
-
-// Disable select text
-document.addEventListener("selectstart", function(e){
-    e.preventDefault();
-});
-
-</script>
+<script src="config.js"></script>
 <script type="text/javascript">
-const API_KEY = "AIzaSyAwSuM68_HlFIUxvR1HOmlIwo4pMKEnHU0";
-const SHEET_ID = "1P_Tz_MT08L-UQel8Rq3SaYd-jhFKb7knSHOJqmv_8-E";
+const nav = performance.getEntriesByType("navigation")[0];
+if(nav && nav.type === "reload"){
+    sessionStorage.clear();
+}
+
+
+async function getData(page){
+
+    const key = "cache_" + page;
+
+    const cache = sessionStorage.getItem(key);
+
+    if(cache){
+        return JSON.parse(cache);
+    }
+
+    const data = await fetch(`${API_URL}?page=${page}`)
+        .then(r => r.json());
+
+    sessionStorage.setItem(key, JSON.stringify(data));
+
+    return data;
+
+}
 
 let headers = [];
 let allRows = [];
 
-//=====================================
-// GOOGLE DRIVE
-//=====================================
+/* ==========================================
+   GOOGLE DRIVE
+========================================== */
 
 function driveImage(id){
     return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
@@ -438,242 +420,317 @@ function driveLogo(id){
     return `https://drive.google.com/thumbnail?id=${id}&sz=w200`;
 }
 
-function extractDriveId(value) {
-    if (!value) return "";
+function extractDriveId(value){
 
-    // Jika sudah berupa ID
-    if (!value.includes("http")) return value.trim();
+    if(!value) return "";
 
-    // Format: .../file/d/ID/view
+    if(!value.includes("http"))
+        return value.trim();
+
     let match = value.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) return match[1];
 
-    // Format: ...?id=ID
+    if(match) return match[1];
+
     match = value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    if (match) return match[1];
+
+    if(match) return match[1];
 
     return value.trim();
+
 }
 
-//=====================================
-// NAVBAR & FOOTER
-//=====================================
+
+/* ==========================================
+   NAVBAR & FOOTER
+========================================== */
 
 async function loadNavFooter(){
 
-    const url =
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:G20?key=${API_KEY}`;
+    try{
 
-    const res = await fetch(url);
-    const data = await res.json();
+        const rows = await getData("navfooter");
 
-    const rows = data.values || [];
+        const logoId =
+        extractDriveId(rows[2]?.[1] || "");
 
-    // ==========================
-    // LOGO
-    // ==========================
-
-    const logoId = extractDriveId(rows[2]?.[1] || "");
-
-    document.getElementById("logo-sekolah").src =
+        document.getElementById("logo-sekolah").src =
         driveLogo(logoId);
 
-    document.getElementById("nama-brand").textContent =
+        document.getElementById("nama-brand").textContent =
         rows[2]?.[2] || "";
 
-    document.getElementById("motto-brand").textContent =
+        document.getElementById("motto-brand").textContent =
         rows[2]?.[3] || "";
 
 
+        const DEFAULT_HEADER =
+        "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png";
 
-    // ==========================
-    // PAGE HEADER
-    // ==========================
+        const bgId =
+        extractDriveId(rows[2]?.[4] || "");
 
-    const DEFAULT_HEADER =
-    "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png";
+        const bgUrl =
+        driveImage(bgId);
 
-    const bgId = extractDriveId(rows[2]?.[4] || "");
-    const bgUrl = driveImage(bgId);
+        const img =
+        new Image();
 
-    const img = new Image();
+        img.onload=function(){
 
-    img.onload = function(){
+            const header =
+            document.getElementById("page-header");
 
-        const header = document.getElementById("page-header");
+            if(header){
 
-        if(header){
-            header.style.background = `
-                linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-                url(${bgUrl}) center/cover no-repeat
-            `;
-        }
+                header.style.background=`
+                    linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+                    url(${bgUrl}) center/cover no-repeat
+                `;
 
-    };
+            }
 
-    img.onerror = function(){
+        };
 
-        const header = document.getElementById("page-header");
+        img.onerror=function(){
 
-        if(header){
-            header.style.background = `
-                linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-                url(${DEFAULT_HEADER}) center/cover no-repeat
-            `;
-        }
+            const header =
+            document.getElementById("page-header");
 
-    };
+            if(header){
 
-    img.src = bgUrl;
+                header.style.background=`
+                    linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+                    url(${DEFAULT_HEADER}) center/cover no-repeat
+                `;
+
+            }
+
+        };
+
+        img.src = bgUrl;
 
 
-
-    // ==========================
-    // FOOTER
-    // ==========================
-
-    document.getElementById("footer-title").textContent =
+        document.getElementById("footer-title").textContent =
         rows[5]?.[1] || "";
 
-    document.getElementById("footer-address").textContent =
+        document.getElementById("footer-address").textContent =
         rows[5]?.[2] || "";
 
-    document.getElementById("footer-copy").textContent =
+        document.getElementById("footer-copy").textContent =
         rows[5]?.[4] || "";
 
-    document.getElementById("footer-phone").textContent=rows[5][5];
+        document.getElementById("footer-phone").textContent =
+        rows[5]?.[5] || "";
 
-    document.getElementById("footer-email").textContent=rows[5][6];
+        document.getElementById("footer-email").textContent =
+        rows[5]?.[6] || "";
 
-    document.getElementById("facebook-link").href =
+        document.getElementById("facebook-link").href =
         rows[6]?.[1] || "#";
 
-    document.getElementById("instagram-link").href =
+        document.getElementById("instagram-link").href =
         rows[6]?.[2] || "#";
 
-    document.getElementById("youtube-link").href =
+        document.getElementById("youtube-link").href =
         rows[6]?.[4] || "#";
 
+    }
+    catch(err){
+
+        console.error(err);
+
+    }
+
 }
-//=====================================
-// LOAD DATA OBSERVASI
-//=====================================
+
+
+/* ==========================================
+   LOAD OBSERVASI ORANG TUA
+========================================== */
 
 async function loadObservasi(){
 
-    const url =
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Form%20Responses%202!A:CU?key=${API_KEY}`;
+    try{
 
-    const res = await fetch(url);
+        const rows = await getData("observasi_ortu");
 
-    const data = await res.json();
+        headers = rows[0] || [];
 
-    const rows = data.values || [];
+        allRows = rows.slice(1);
 
-    headers = rows[0] || [];
+        renderTable();
 
-    allRows = rows.slice(1);
+    }
+    catch(err){
 
-    renderTable();
+        console.error(err);
+
+    }
 
 }
 
-//=====================================
-// TABEL OBSERVASI
-//=====================================
 
+function formatTanggal(tanggal){
+
+    if(!tanggal) return "-";
+
+    const d = new Date(tanggal);
+
+    if(isNaN(d)) return tanggal;
+
+    const tgl = String(d.getDate()).padStart(2,"0");
+    const bln = String(d.getMonth()+1).padStart(2,"0");
+    const thn = d.getFullYear();
+
+    return `${tgl}-${bln}-${thn}`;
+
+}
+
+/* ==========================================
+   TABEL
+========================================== */
 function renderTable(){
 
-    // Destroy jika sudah ada
-    if ($.fn.DataTable.isDataTable("#observasiTable")) {
-        $("#observasiTable").DataTable().destroy();
+    if($.fn.DataTable.isDataTable("#observasiTable")){
+
+        $("#observasiTable")
+        .DataTable()
+        .destroy();
+
     }
 
-    const tbody = document.getElementById("tableObservasi");
+    const tbody =
+    document.getElementById("tableObservasi");
 
-    tbody.innerHTML = "";
+    tbody.innerHTML="";
 
-    allRows.forEach((row, index) => {
+
+    allRows.forEach((row,index)=>{
 
         tbody.innerHTML += `
             <tr>
-                <td>${index + 1}</td>
-                <td>${row[2] || "-"}</td>
+                <td>${index+1}</td>
+                <td>${row[1] || "-"}</td>
                 <td>${row[3] || "-"}</td>
                 <td>${row[4] || "-"}</td>
-                <td>${row[5] || "-"}</td>
-                <td>${row[6] || "-"}</td>
+                <td>${formatTanggal(row[5])}</td>
+                <td>${row[7] || "-"}</td>
                 <td>${row[8] || "-"}</td>
             </tr>
         `;
 
     });
 
+
     $("#observasiTable").DataTable({
 
-        responsive: true,
+        responsive:true,
 
-        pageLength: 10,
+        pageLength:10,
 
-        lengthMenu: [
-            [10, 50, 100, 500, -1],
-            [10, 50, 100, 500, "All"]
+        lengthMenu:[
+            [10,50,100,500,-1],
+            [10,50,100,500,"All"]
         ],
 
-        order: [[4, "desc"]],
+        order:[[4,"desc"]],
 
-        columnDefs: [
+        columnDefs:[
             {
-                targets: 0,
-                searchable: false,
-                orderable: false
+                targets:0,
+                searchable:false,
+                orderable:false
             }
         ],
 
-        language: {
-            url: "https://cdn.datatables.net/plug-ins/1.13.8/i18n/id.json"
+        language:{
+            url:"https://cdn.datatables.net/plug-ins/1.13.8/i18n/id.json"
         }
 
     });
 
 }
 
-//=====================================
-// LOAD HEADER HALAMAN
-//=====================================
+/* ==========================================
+   HEADER
+========================================== */
 
 async function loadHeader(){
 
-    const url =
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Identifikasi!A1:C4?key=${API_KEY}`;
+    try{
 
-    const res = await fetch(url);
+        const rows = await getData("identifikasi");
 
-    const data = await res.json();
+        const obj={};
 
-    const rows = data.values || [];
+        rows.slice(0,4).forEach(row=>{
 
-    const obj = {};
+            obj[row[0]]=row[2] || "";
 
-    rows.forEach(row=>{
+        });
 
-        obj[row[0]] = row[2] || "";
+        // Jika diperlukan:
+        // document.getElementById("page-title").textContent =
+        // obj["Judul Halaman"] || "";
 
-    });
+    }
+    catch(err){
+
+        console.error(err);
+
+    }
 
 }
 
-//=====================================
-// INIT
-//=====================================
 
-document.addEventListener("DOMContentLoaded", async ()=>{
+function showLoading(){
 
-    await loadNavFooter();
+    if(sessionStorage.getItem("loaded")){
+        return;
+    }
 
-    await loadHeader();
+    document
+        .getElementById("loadingFloat")
+        .classList.remove("hide");
 
-    await loadObservasi();
+}
+
+
+function hideLoading(){
+
+    document
+        .getElementById("loadingFloat")
+        .classList.add("hide");
+
+    sessionStorage.setItem("loaded","true");
+
+}
+
+/* ==========================================
+   START
+========================================== */
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    showLoading();
+
+    try{
+
+        await loadNavFooter();
+
+        await loadHeader();
+
+        await loadObservasi();
+
+    }catch(err){
+
+        console.error(err);
+
+    }finally{
+
+        hideLoading();
+
+    }
 
 });
 </script>
