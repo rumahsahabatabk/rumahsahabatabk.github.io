@@ -40,6 +40,9 @@
     opacity:.95;
 }
 
+.page-header.loading{
+    opacity:0;
+}
 
 .identifikasi{
     padding:60px 0;
@@ -186,7 +189,16 @@
 
 <body>
 
-    <!-- HEADER -->
+  <div id="loadingFloat" class="loading-float">
+    <div class="dots-loader">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <div class="loading-text"></div>
+ </div>
 
     <header>
 
@@ -435,64 +447,33 @@
 
 </footer>
 
+<script src="config.js"></script>
 <script src="script.js"></script>
-<script>
-/* ==============================
-   PROTEKSI WEBSITE
-============================== */
-
-// Disable klik kanan
-document.addEventListener("contextmenu", function(e){
-    e.preventDefault();
-});
-
-
-// Disable shortcut Inspect Element
-document.addEventListener("keydown", function(e){
-
-    // F12
-    if(e.key === "F12"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + I (Inspect)
-    if(e.ctrlKey && e.shiftKey && e.key === "I"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + J (Console)
-    if(e.ctrlKey && e.shiftKey && e.key === "J"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + C (Element picker)
-    if(e.ctrlKey && e.shiftKey && e.key === "C"){
-        e.preventDefault();
-    }
-
-    // Ctrl + U (View Source)
-    if(e.ctrlKey && e.key === "u"){
-        e.preventDefault();
-    }
-
-});
-
-
-// Disable copy
-document.addEventListener("copy", function(e){
-    e.preventDefault();
-});
-
-
-// Disable select text
-document.addEventListener("selectstart", function(e){
-    e.preventDefault();
-});
-
-</script>
 <script type="text/javascript">
-const API_KEY = "AIzaSyAwSuM68_HlFIUxvR1HOmlIwo4pMKEnHU0";
-const SHEET_ID = "1P_Tz_MT08L-UQel8Rq3SaYd-jhFKb7knSHOJqmv_8-E";
+const nav = performance.getEntriesByType("navigation")[0];
+if(nav && nav.type === "reload"){
+    sessionStorage.clear();
+}
+
+
+async function getData(page){
+
+    const key = "cache_" + page;
+
+    const cache = sessionStorage.getItem(key);
+
+    if(cache){
+        return JSON.parse(cache);
+    }
+
+    const data = await fetch(`${API_URL}?page=${page}`)
+        .then(r => r.json());
+
+    sessionStorage.setItem(key, JSON.stringify(data));
+
+    return data;
+
+}
 
 let chart = null;
 let allRows = [];
@@ -533,16 +514,11 @@ function extractDriveId(value) {
 // NAVBAR & FOOTER
 //=====================================
 
+
 async function loadNavFooter(){
 
-    const url =
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:G20?key=${API_KEY}`;
-
-    const res = await fetch(url);
-
-    const data = await res.json();
-
-    const rows = data.values || [];
+    const rows = await fetch(`${API_URL}?page=navfooter`)
+        .then(r => r.json());
 
     // ==========================
     // NAVBAR
@@ -569,36 +545,34 @@ async function loadNavFooter(){
 
     const bgUrl = driveImage(bgId);
 
+    const header = document.getElementById("page-header");
+
+    if(header){
+
+        header.style.background = `
+            linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+            url(${bgUrl}) center/cover no-repeat
+        `;
+
+    }
+
     const img = new Image();
-
-    img.onload = function(){
-
-        const header = document.getElementById("page-header");
-
-        if(header){
-            header.style.background = `
-                linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-                url(${bgUrl}) center/cover no-repeat
-            `;
-        }
-
-    };
 
     img.onerror = function(){
 
-        const header = document.getElementById("page-header");
-
         if(header){
+
             header.style.background = `
                 linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
                 url(${DEFAULT_HEADER}) center/cover no-repeat
             `;
+
         }
 
     };
 
     img.src = bgUrl;
-
+    
     // ==========================
     // FOOTER
     // ==========================
@@ -612,9 +586,11 @@ async function loadNavFooter(){
     document.getElementById("footer-copy").textContent =
         rows[5]?.[4] || "";
 
-    document.getElementById("footer-phone").textContent=rows[5][5];
+    document.getElementById("footer-phone").textContent =
+        rows[5]?.[5] || "";
 
-    document.getElementById("footer-email").textContent=rows[5][6];
+    document.getElementById("footer-email").textContent =
+        rows[5]?.[6] || "";
 
     document.getElementById("facebook-link").href =
         rows[6]?.[1] || "#";
@@ -633,33 +609,27 @@ async function loadNavFooter(){
 
 async function loadGrafik(){
 
-    const url =
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Form%20Responses%201!A:CU?key=${API_KEY}`;
+    const rows = await getData("grafik");
 
-    const res = await fetch(url);
-
-    const data = await res.json();
-
-    const rows = data.values || [];
-
-    headers = rows[0];
+    headers = rows[0] || [];
 
     allRows = rows.slice(1);
 
     const select = document.getElementById("pilihSiswa");
 
     select.innerHTML =
-    `<option value="">-- Pilih Murid --</option>`;
+        `<option value="">-- Pilih Murid --</option>`;
 
     allRows.forEach((row,index)=>{
 
         select.innerHTML += `
             <option value="${index}">
-                ${row[2]} - ${row[4]}
+                ${row[2] || "-"} - ${row[4] || "-"}
             </option>
         `;
 
     });
+
 
     select.addEventListener("change",function(){
 
@@ -669,7 +639,6 @@ async function loadGrafik(){
 
     });
 
-    // tampilkan otomatis siswa pertama
 
     if(allRows.length>0){
 
@@ -681,6 +650,19 @@ async function loadGrafik(){
 
 }
 
+function formatTanggal(tanggal){
+
+    if(!tanggal) return "-";
+
+    const d = new Date(tanggal);
+
+    const hari = String(d.getDate()).padStart(2,"0");
+    const bulan = String(d.getMonth()+1).padStart(2,"0");
+    const tahun = d.getFullYear();
+
+    return `${hari}-${bulan}-${tahun}`;
+
+}
 //=====================================
 // TAMPILKAN DATA SISWA
 //=====================================
@@ -694,7 +676,7 @@ function tampilkanData(index){
         <strong>Nama Panggilan :</strong> ${row[3]}<br>
         <strong>Kelas :</strong> ${row[4]}<br>
         <strong>Guru :</strong> ${row[5]}<br>
-        <strong>Tanggal Observasi :</strong> ${row[6]}
+        <strong>Tanggal Observasi :</strong> ${formatTanggal(row[6])}
     `;
 
     buatGrafik(row);
@@ -1038,11 +1020,52 @@ function buatGrafik(row){
 // INIT
 //=====================================
 
-document.addEventListener("DOMContentLoaded",async()=>{
+function showLoading(){
 
-    await loadNavFooter();
+    if(sessionStorage.getItem("loaded")){
+        return;
+    }
 
-    await loadGrafik();
+    document
+        .getElementById("loadingFloat")
+        .classList.remove("hide");
+
+}
+
+
+function hideLoading(){
+
+    document
+        .getElementById("loadingFloat")
+        .classList.add("hide");
+
+    sessionStorage.setItem("loaded","true");
+
+}
+
+/* ==========================================
+   START
+========================================== */
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    showLoading();
+
+    try{
+
+        await loadNavFooter();
+
+        await loadGrafik();
+
+    }catch(err){
+
+        console.error(err);
+
+    }finally{
+
+        hideLoading();
+
+    }
 
 });
 </script>
