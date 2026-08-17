@@ -28,6 +28,10 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
     margin-bottom:15px;
 }
 
+.page-header.loading{
+    opacity:0;
+}
+
 .gallery{
     padding:50px 0;
 }
@@ -85,7 +89,16 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 </head>
 
 <body>
+<div id="loadingFloat" class="loading-float">
+    <div class="dots-loader">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
 
+    <div class="loading-text"></div>
+</div>
 <header>
 
 <div class="container nav">
@@ -246,69 +259,36 @@ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"
 
 </footer>
 
+<script src="config.js"></script>
 <script src="script.js"></script>
-<script>
-/* ==============================
-   PROTEKSI WEBSITE
-============================== */
-
-// Disable klik kanan
-document.addEventListener("contextmenu", function(e){
-    e.preventDefault();
-});
-
-
-// Disable shortcut Inspect Element
-document.addEventListener("keydown", function(e){
-
-    // F12
-    if(e.key === "F12"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + I (Inspect)
-    if(e.ctrlKey && e.shiftKey && e.key === "I"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + J (Console)
-    if(e.ctrlKey && e.shiftKey && e.key === "J"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + C (Element picker)
-    if(e.ctrlKey && e.shiftKey && e.key === "C"){
-        e.preventDefault();
-    }
-
-    // Ctrl + U (View Source)
-    if(e.ctrlKey && e.key === "u"){
-        e.preventDefault();
-    }
-
-});
-
-
-// Disable copy
-document.addEventListener("copy", function(e){
-    e.preventDefault();
-});
-
-
-// Disable select text
-document.addEventListener("selectstart", function(e){
-    e.preventDefault();
-});
-
-</script>
 <script type="text/javascript">
-const API_KEY = "AIzaSyAwSuM68_HlFIUxvR1HOmlIwo4pMKEnHU0";
-const SHEET_ID = "1P_Tz_MT08L-UQel8Rq3SaYd-jhFKb7knSHOJqmv_8-E";
-
-
-function driveLogo(id){
-    return `https://lh3.googleusercontent.com/d/${id}=w200`;
+const nav = performance.getEntriesByType("navigation")[0];
+if(nav && nav.type === "reload"){
+    sessionStorage.clear();
 }
+
+async function getData(page){
+
+    const key = "cache_" + page;
+
+    const cache = sessionStorage.getItem(key);
+
+    if(cache){
+        return JSON.parse(cache);
+    }
+
+    const data = await fetch(`${API_URL}?page=${page}`)
+        .then(r => r.json());
+
+    sessionStorage.setItem(key, JSON.stringify(data));
+
+    return data;
+
+}
+
+/* ==========================================
+   UTILITAS
+========================================== */
 
 function driveImage(id){
     return `https://lh3.googleusercontent.com/d/${id}=w2000`;
@@ -318,126 +298,105 @@ function driveImages(id){
     return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
 }
 
-function extractDriveId(value) {
-    if (!value) return "";
+function extractDriveId(value){
 
-    // Jika sudah berupa ID
-    if (!value.includes("http")) return value.trim();
+    if(!value) return "";
 
-    // Format: .../file/d/ID/view
-    let match = value.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) return match[1];
+    if(!value.includes("http")) return value.trim();
 
-    // Format: ...?id=ID
-    match = value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    if (match) return match[1];
+    let match=value.match(/\/d\/([a-zA-Z0-9_-]+)/);
+
+    if(match) return match[1];
+
+    match=value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+
+    if(match) return match[1];
 
     return value.trim();
+
 }
+
+/* ==========================================
+   NAVBAR & FOOTER
+========================================== */
 
 async function loadNavFooter(){
 
-    const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:G20?key=${API_KEY}`;
+    try{
 
-    const res=await fetch(url);
+        const rows = await getData("navfooter");
 
-    const data=await res.json();
+        // ========= NAVBAR =========
 
-    const rows=data.values || [];
+        const logoId = extractDriveId(rows[2][1]);
 
-    // ========= NAVBAR =========
+        document.getElementById("logo-sekolah").src = driveImage(logoId);
 
-    const logoId = extractDriveId(rows[2][1]);
-    document.getElementById("logo-sekolah").src = driveImage(logoId);
-    const brand=rows[2][2];
-    const motto=rows[2][3];
-    const bgId = extractDriveId(rows[2][4] || "");
+        document.getElementById("nama-brand").textContent = rows[2][2] || "";
 
-    document.getElementById("logo-sekolah").src = driveImage(logoId);
+        document.getElementById("motto-brand").textContent = rows[2][3] || "";
 
-    document.getElementById("nama-brand").textContent=brand;
+        const bgId = extractDriveId(rows[2][4] || "");
 
-    document.getElementById("motto-brand").textContent=motto;
+        const DEFAULT_HEADER =
+        "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png";
 
-    const DEFAULT_HEADER =
-    "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png";
-
-    const bgUrl = driveImages(bgId);
-
-    const testImg = new Image();
-
-    testImg.onload = function(){
+        const bgUrl = driveImages(bgId);
 
         document.getElementById("page-header").style.background = `
             linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
             url(${bgUrl}) center/cover no-repeat
         `;
 
-    };
+        const img = new Image();
 
-    testImg.onerror = function(){
+        img.onerror = () => {
 
-        document.getElementById("page-header").style.background = `
-            linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-            url(${DEFAULT_HEADER}) center/cover no-repeat
-        `;
+            document.getElementById("page-header").style.background = `
+                linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+                url(${DEFAULT_HEADER}) center/cover no-repeat
+            `;
 
-    };
+        };
 
-    testImg.src = bgUrl;
+        img.src = bgUrl;
 
-    // ========= FOOTER =========
+        // ========= FOOTER =========
 
-    document.getElementById("footer-title").textContent=rows[5][1];
+        document.getElementById("footer-title").textContent = rows[5][1] || "";
 
-    document.getElementById("footer-address").textContent=rows[5][2];
+        document.getElementById("footer-address").textContent = rows[5][2] || "";
 
-    document.getElementById("footer-copy").textContent=rows[5][4];
+        document.getElementById("footer-copy").textContent = rows[5][4] || "";
 
-    document.getElementById("footer-phone").textContent=rows[5][5];
+        document.getElementById("footer-phone").textContent = rows[5][5] || "";
 
-    document.getElementById("footer-email").textContent=rows[5][6];
+        document.getElementById("footer-email").textContent = rows[5][6] || "";
 
-    document.getElementById("facebook-link").href=rows[6][1];
+        document.getElementById("facebook-link").href = rows[6][1] || "#";
 
-    document.getElementById("instagram-link").href=rows[6][2];
+        document.getElementById("instagram-link").href = rows[6][2] || "#";
 
-    document.getElementById("youtube-link").href=rows[6][4];
+        document.getElementById("youtube-link").href = rows[6][4] || "#";
 
-}
+    }catch(err){
 
-/* ==========================================
-   GOOGLE SHEETS API
-========================================== */
+        console.error(err);
 
-async function getSheet(range) {
-
-    const url =
-        `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/${encodeURIComponent(range)}?key=${API_KEY}`;
-
-    const response = await fetch(url);
-
-    if (!response.ok) {
-        throw new Error("Gagal mengambil data.");
     }
 
-    const data = await response.json();
-
-    return data.values || [];
-
 }
 
 /* ==========================================
-   LOAD PROFIL LAYANAN
+   PROFIL LAYANAN
 ========================================== */
 
-async function loadLayanan() {
+async function loadLayanan(){
 
-    try {
+    try{
 
-        const rows = await getSheet("Profil_Layanan!A1:C100");
+        const rows = await getData("layanan");
 
-        // Header
         document.getElementById("page-title").textContent =
             rows[0]?.[2] || "";
 
@@ -446,54 +405,29 @@ async function loadLayanan() {
 
         document.getElementById("gallery-title").textContent =
             rows[2]?.[2] || "";
+
         document.getElementById("gallery-subtitle").textContent =
             rows[3]?.[2] || "";
-
-        // Jika nanti ingin memakai sub judul konten
-        // rows[3][2]
 
         const gallery = document.getElementById("gallery-list");
 
         gallery.innerHTML = "";
 
-        // Mulai membaca gambar dari baris ke-6 (index 5)
-        for (let i = 5; i < rows.length; i++) {
+        for(let i=5;i<rows.length;i++){
 
-            let value = (rows[i][1] || "").trim();
+            const id = extractDriveId(rows[i][1] || "");
 
-            if (!value) continue;
-
-            let id = value;
-
-            try {
-
-                if (value.includes("drive.google.com")) {
-
-                    const url = new URL(value);
-
-                    if (url.pathname.includes("/d/")) {
-
-                        id = url.pathname.split("/d/")[1].split("/")[0];
-
-                    } else {
-
-                        id = url.searchParams.get("id") || value;
-
-                    }
-
-                }
-
-            } catch (e) {}
+            if(!id) continue;
 
             gallery.innerHTML += `
                 <img
-                    src="https://drive.google.com/thumbnail?id=${id}&sz=w2000"
+                    src="${driveImages(id)}"
                     alt="">
             `;
 
         }
 
-    } catch (err) {
+    }catch(err){
 
         console.error(err);
 
@@ -501,9 +435,49 @@ async function loadLayanan() {
 
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadNavFooter();
-    loadLayanan();
+function showLoading(){
+
+    if(sessionStorage.getItem("loaded")){
+        return;
+    }
+
+    document
+        .getElementById("loadingFloat")
+        .classList.remove("hide");
+}
+
+function hideLoading(){
+
+    document
+        .getElementById("loadingFloat")
+        .classList.add("hide");
+
+    sessionStorage.setItem("loaded","true");
+}
+
+/* ==========================================
+   START
+========================================== */
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    showLoading();
+
+    try{
+
+        await loadNavFooter();
+        await loadLayanan();
+
+    }catch(err){
+
+        console.error(err);
+
+    }finally{
+
+        hideLoading();
+
+    }
+
 });
 </script>
 </body>
