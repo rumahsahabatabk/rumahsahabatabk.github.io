@@ -28,6 +28,10 @@
             margin-bottom: 15px;
         }
 
+        .page-header.loading{
+            opacity:0;
+        }
+
         .video-section {
             padding: 50px 0;
         }
@@ -66,6 +70,38 @@
             line-height: 1.8;
         }
 
+        .pagination{
+            display:flex;
+            justify-content:center;
+            align-items:center;
+            gap:10px;
+            margin-top:40px;
+            flex-wrap:wrap;
+        }
+
+        .pagination button{
+            min-width:45px;
+            height:45px;
+            border:none;
+            border-radius:10px;
+            background:#fff;
+            cursor:pointer;
+            font-size:15px;
+            box-shadow:0 5px 15px rgba(0,0,0,.10);
+            transition:.3s;
+        }
+
+        .pagination button:hover,
+        .pagination button.active{
+            background:#0d6efd;
+            color:#fff;
+        }
+
+        .pagination button:disabled{
+            opacity:.4;
+            cursor:not-allowed;
+        }
+
         @media(max-width:768px) {
 
             .page-header h1 {
@@ -86,7 +122,16 @@
 </head>
 
 <body>
+<div id="loadingFloat" class="loading-float">
+    <div class="dots-loader">
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+    </div>
 
+    <div class="loading-text"></div>
+ </div>
     <header>
 
         <div class="container nav">
@@ -156,6 +201,8 @@
             </div>
 
             <div class="video-grid" id="videoGrid"></div>
+
+            <div class="pagination" id="pagination"></div>
 
         </div>
 
@@ -244,68 +291,36 @@
 
 </footer>
 
+<script src="config.js"></script>
 <script src="script.js"></script>
-<script>
-/* ==============================
-   PROTEKSI WEBSITE
-============================== */
-
-// Disable klik kanan
-document.addEventListener("contextmenu", function(e){
-    e.preventDefault();
-});
-
-
-// Disable shortcut Inspect Element
-document.addEventListener("keydown", function(e){
-
-    // F12
-    if(e.key === "F12"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + I (Inspect)
-    if(e.ctrlKey && e.shiftKey && e.key === "I"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + J (Console)
-    if(e.ctrlKey && e.shiftKey && e.key === "J"){
-        e.preventDefault();
-    }
-
-    // Ctrl + Shift + C (Element picker)
-    if(e.ctrlKey && e.shiftKey && e.key === "C"){
-        e.preventDefault();
-    }
-
-    // Ctrl + U (View Source)
-    if(e.ctrlKey && e.key === "u"){
-        e.preventDefault();
-    }
-
-});
-
-
-// Disable copy
-document.addEventListener("copy", function(e){
-    e.preventDefault();
-});
-
-
-// Disable select text
-document.addEventListener("selectstart", function(e){
-    e.preventDefault();
-});
-
-</script>
 <script type="text/javascript">
-const API_KEY = "AIzaSyAwSuM68_HlFIUxvR1HOmlIwo4pMKEnHU0";
-const SHEET_ID = "1P_Tz_MT08L-UQel8Rq3SaYd-jhFKb7knSHOJqmv_8-E";
-
-function driveLogo(id){
-    return `https://lh3.googleusercontent.com/d/${id}=w200`;
+const nav = performance.getEntriesByType("navigation")[0];
+if(nav && nav.type === "reload"){
+    sessionStorage.clear();
 }
+
+async function getData(page){
+
+    const key = "cache_" + page;
+
+    const cache = sessionStorage.getItem(key);
+
+    if(cache){
+        return JSON.parse(cache);
+    }
+
+    const data = await fetch(`${API_URL}?page=${page}`)
+        .then(r => r.json());
+
+    sessionStorage.setItem(key, JSON.stringify(data));
+
+    return data;
+
+}
+
+/* ==========================================
+   UTILITAS
+========================================== */
 
 function driveImage(id){
     return `https://lh3.googleusercontent.com/d/${id}=w2000`;
@@ -315,141 +330,140 @@ function driveImages(id){
     return `https://drive.google.com/thumbnail?id=${id}&sz=w2000`;
 }
 
-function extractDriveId(value) {
-    if (!value) return "";
+function extractDriveId(value){
 
-    // Jika sudah berupa ID
-    if (!value.includes("http")) return value.trim();
+    if(!value) return "";
 
-    // Format: .../file/d/ID/view
-    let match = value.match(/\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) return match[1];
+    if(!value.includes("http")) return value.trim();
 
-    // Format: ...?id=ID
-    match = value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
-    if (match) return match[1];
+    let match=value.match(/\/d\/([a-zA-Z0-9_-]+)/);
+
+    if(match) return match[1];
+
+    match=value.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+
+    if(match) return match[1];
 
     return value.trim();
+
 }
+
+/* ==========================================
+   NAVBAR & FOOTER
+========================================== */
 
 async function loadNavFooter(){
 
-    const url=`https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Nav_Footer!A1:G20?key=${API_KEY}`;
+    try{
 
-    const res=await fetch(url);
+        const rows = await getData("navfooter");
 
-    const data=await res.json();
+        const logoId = extractDriveId(rows[2][1]);
 
-    const rows=data.values || [];
+        document.getElementById("logo-sekolah").src = driveImage(logoId);
 
-    // ========= NAVBAR =========
+        document.getElementById("nama-brand").textContent = rows[2][2] || "";
 
-    const logoId = extractDriveId(rows[2][1]);
-    document.getElementById("logo-sekolah").src = driveImage(logoId);
-    const brand=rows[2][2];
-    const motto=rows[2][3];
-    const bgId = extractDriveId(rows[2][4] || "");
+        document.getElementById("motto-brand").textContent = rows[2][3] || "";
 
-    document.getElementById("logo-sekolah").src = driveImage(logoId);
+        const bgId = extractDriveId(rows[2][4] || "");
 
-    document.getElementById("nama-brand").textContent=brand;
+        const DEFAULT_HEADER =
+        "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png";
 
-    document.getElementById("motto-brand").textContent=motto;
-
-    const DEFAULT_HEADER =
-    "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEhpBdQ0hlKtWUcOE_8WJwSdDmx6xUSiCrm04RSLfIHR4pxuRku44s5RnAo50Mk3K6VVTmHzBkstWVXFDvqy9pixJwAIDP-jo25UTFs66QqKmj4FwfqEYtwdzVVr6PIeOS_g_PFgwOZTz-xXHJsMABtqmPyoQtVgZYV6n0MzuqHG94RwShYBU-A2ZVyzcZs/s400/abk1.png";
-
-    const bgUrl = driveImages(bgId);
-
-    const testImg = new Image();
-
-    testImg.onload = function(){
+        const bgUrl = driveImages(bgId);
 
         document.getElementById("page-header").style.background = `
             linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
             url(${bgUrl}) center/cover no-repeat
         `;
 
-    };
+        const img = new Image();
 
-    testImg.onerror = function(){
+        img.onerror = () => {
 
-        document.getElementById("page-header").style.background = `
-            linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
-            url(${DEFAULT_HEADER}) center/cover no-repeat
-        `;
+            document.getElementById("page-header").style.background = `
+                linear-gradient(rgba(0,0,0,.55),rgba(0,0,0,.55)),
+                url(${DEFAULT_HEADER}) center/cover no-repeat
+            `;
 
-    };
+        };
 
-    testImg.src = bgUrl;
+        img.src = bgUrl;
 
-    // ========= FOOTER =========
+        document.getElementById("footer-title").textContent = rows[5][1] || "";
 
-    document.getElementById("footer-title").textContent=rows[5][1];
+        document.getElementById("footer-address").textContent = rows[5][2] || "";
 
-    document.getElementById("footer-address").textContent=rows[5][2];
+        document.getElementById("footer-copy").textContent = rows[5][4] || "";
 
-    document.getElementById("footer-copy").textContent=rows[5][4];
+        document.getElementById("footer-phone").textContent = rows[5][5] || "";
 
-    document.getElementById("footer-phone").textContent=rows[5][5];
+        document.getElementById("footer-email").textContent = rows[5][6] || "";
 
-    document.getElementById("footer-email").textContent=rows[5][6];
+        document.getElementById("facebook-link").href = rows[6][1] || "#";
 
-    document.getElementById("facebook-link").href=rows[6][1];
+        document.getElementById("instagram-link").href = rows[6][2] || "#";
 
-    document.getElementById("instagram-link").href=rows[6][2];
+        document.getElementById("youtube-link").href = rows[6][4] || "#";
 
-    document.getElementById("youtube-link").href=rows[6][4];
+    }catch(err){
+
+        console.error(err);
+
+    }
 
 }
 
-/* ===========================
-   HEADER (ROW 1-4)
-=========================== */
+/* ==========================================
+   HEADER
+========================================== */
 
 async function loadHeader(){
 
-    const url =
-    `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Profil_Video!A1:C4?key=${API_KEY}`;
+    try{
 
-    const res = await fetch(url);
-    const data = await res.json();
+        const rows = await getData("videoheader");
 
-    const rows = data.values || [];
+        rows.forEach(row=>{
 
-    rows.forEach(row=>{
+            const label = row[0] || "";
 
-        const label = row[0] || "";
-        const isi   = row[2] || "";
+            const isi = row[2] || "";
 
-        switch(label){
+            switch(label){
 
-            case "Judul Halaman":
-                document.getElementById("pageTitle").textContent = isi;
-                break;
+                case "Judul Halaman":
+                    document.getElementById("pageTitle").textContent = isi;
+                    break;
 
-            case "Sub Judul Halaman":
-                document.getElementById("pageSubtitle").textContent = isi;
-                break;
+                case "Sub Judul Halaman":
+                    document.getElementById("pageSubtitle").textContent = isi;
+                    break;
 
-            case "Judul Konten":
-                document.getElementById("judul").textContent = isi;
-                break;
+                case "Judul Konten":
+                    document.getElementById("judul").textContent = isi;
+                    break;
 
-            case "Sub Judul Konten":
-                document.getElementById("subjudul").textContent = isi;
-                break;
+                case "Sub Judul Konten":
+                    document.getElementById("subjudul").textContent = isi;
+                    break;
 
-        }
+            }
 
-    });
+        });
+
+    }catch(err){
+
+        console.error(err);
+
+    }
 
 }
 
-
-/* ===========================
-   AMBIL ID VIDEO YOUTUBE
-=========================== */
+/* ==========================================
+   YOUTUBE
+========================================== */
 
 function getYoutubeId(value){
 
@@ -461,10 +475,8 @@ function getYoutubeId(value){
 
         const url = new URL(value);
 
-        if(
-            url.hostname==="youtube.com" ||
-            url.hostname==="www.youtube.com"
-        ){
+        if(url.hostname==="youtube.com" ||
+           url.hostname==="www.youtube.com"){
 
             return url.searchParams.get("v") || "";
 
@@ -478,7 +490,6 @@ function getYoutubeId(value){
 
     }catch(e){
 
-        // Jika langsung ID video
         return value;
 
     }
@@ -487,31 +498,28 @@ function getYoutubeId(value){
 
 }
 
+/* ==========================================
+   VIDEO
+========================================== */
 
-/* ===========================
-   VIDEO (ROW 6 KE BAWAH)
-=========================== */
+let allVideos = [];
+let currentPage = 1;
+const videoPerPage = 4;
+
 
 async function loadVideo(){
 
     try{
 
-        const url =
-        `https://sheets.googleapis.com/v4/spreadsheets/${SHEET_ID}/values/Profil_Video!A6:D?key=${API_KEY}`;
+        const rows = await getData("video");
 
-        const response = await fetch(url);
-        const data = await response.json();
-
-        const rows = data.values || [];
-
-        const grid = document.getElementById("videoGrid");
-        grid.innerHTML = "";
+        allVideos = [];
 
         rows.forEach(row=>{
 
             const videoInput = row[1] || "";
-            const judul      = row[2] || "";
-            const deskripsi  = row[3] || "";
+            const judul = row[2] || "";
+            const deskripsi = row[3] || "";
 
             if(!videoInput) return;
 
@@ -520,26 +528,18 @@ async function loadVideo(){
             if(!/^[A-Za-z0-9_-]{11}$/.test(videoId))
                 return;
 
-            grid.innerHTML += `
-                <div class="video-card">
 
-                    <iframe
-                        src="https://www.youtube.com/embed/${videoId}?rel=0"
-                        title="${judul}"
-                        frameborder="0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                        allowfullscreen>
-                    </iframe>
-
-                    <div class="video-info">
-                        <h3>${judul}</h3>
-                        <p>${deskripsi}</p>
-                    </div>
-
-                </div>
-            `;
+            allVideos.push({
+                id: videoId,
+                judul: judul,
+                deskripsi: deskripsi
+            });
 
         });
+
+
+        renderVideo();
+
 
     }catch(err){
 
@@ -550,12 +550,175 @@ async function loadVideo(){
 }
 
 
-document.addEventListener("DOMContentLoaded", () => {
-    loadNavFooter();
-    loadHeader();
-    loadVideo();
-});
 
+function renderVideo(){
+
+    const grid = document.getElementById("videoGrid");
+
+    grid.innerHTML="";
+
+
+    const start = (currentPage - 1) * videoPerPage;
+
+    const data = allVideos.slice(
+        start,
+        start + videoPerPage
+    );
+
+
+    data.forEach(video=>{
+
+
+        grid.innerHTML += `
+
+        <div class="video-card">
+
+            <iframe
+                src="https://www.youtube.com/embed/${video.id}?rel=0"
+                title="${video.judul}"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowfullscreen>
+            </iframe>
+
+
+            <div class="video-info">
+
+                <h3>${video.judul}</h3>
+
+                <p>${video.deskripsi}</p>
+
+            </div>
+
+        </div>
+
+        `;
+
+
+    });
+
+
+    renderPagination();
+
+}
+
+
+
+function renderPagination(){
+
+    const pagination = document.getElementById("pagination");
+
+    pagination.innerHTML = "";
+
+    const totalPages = Math.ceil(allVideos.length / videoPerPage);
+
+    if(totalPages <= 1){
+        pagination.style.display = "none";
+        return;
+    }
+
+    pagination.style.display = "flex";
+
+    // Prev
+    const prev = document.createElement("button");
+    prev.innerHTML = "&laquo; Prev";
+    prev.disabled = currentPage === 1;
+
+    prev.onclick = () => {
+        if(currentPage > 1){
+            currentPage--;
+            renderVideo();
+        }
+    };
+
+    pagination.appendChild(prev);
+
+    // Maksimal tampil 3 nomor halaman
+    let start = Math.max(1, currentPage - 1);
+    let end = Math.min(totalPages, start + 2);
+
+    if(end - start < 2){
+        start = Math.max(1, end - 2);
+    }
+
+    for(let i = start; i <= end; i++){
+
+        const btn = document.createElement("button");
+        btn.textContent = i;
+
+        if(i === currentPage){
+            btn.classList.add("active");
+        }
+
+        btn.onclick = () => {
+            currentPage = i;
+            renderVideo();
+        };
+
+        pagination.appendChild(btn);
+    }
+
+    // Next
+    const next = document.createElement("button");
+    next.innerHTML = "Next &raquo;";
+    next.disabled = currentPage === totalPages;
+
+    next.onclick = () => {
+        if(currentPage < totalPages){
+            currentPage++;
+            renderVideo();
+        }
+    };
+
+    pagination.appendChild(next);
+}
+
+
+function showLoading(){
+
+    if(sessionStorage.getItem("loaded")){
+        return;
+    }
+
+    document
+        .getElementById("loadingFloat")
+        .classList.remove("hide");
+}
+
+function hideLoading(){
+
+    document
+        .getElementById("loadingFloat")
+        .classList.add("hide");
+
+    sessionStorage.setItem("loaded","true");
+}
+
+/* ==========================================
+   START
+========================================== */
+
+document.addEventListener("DOMContentLoaded", async () => {
+
+    showLoading();
+
+    try{
+
+        await loadNavFooter();
+        await loadHeader();
+        await loadVideo();
+
+    }catch(err){
+
+        console.error(err);
+
+    }finally{
+
+        hideLoading();
+
+    }
+
+});
 </script>
 </body>
 </html>
