@@ -630,6 +630,20 @@ function renderSidebar(){
 
 }
 
+function formatTanggal(tanggal){
+
+    if(!tanggal) return "-";
+
+    const d = new Date(tanggal);
+
+    const hari = String(d.getDate()).padStart(2,"0");
+    const bulan = String(d.getMonth()+1).padStart(2,"0");
+    const tahun = d.getFullYear();
+
+    return `${hari}-${bulan}-${tahun}`;
+
+}
+
 function tampilBerita(index){
 
     document.querySelectorAll("#berita-list a").forEach(a=>{
@@ -653,7 +667,7 @@ function tampilBerita(index){
             <small>
                 <i class="fa fa-user"></i> ${berita.penulis}
                 &nbsp;&nbsp;
-                <i class="fa fa-calendar"></i> ${berita.tanggal}
+                <i class="fa fa-calendar"></i> ${formatTanggal(berita.tanggal)}
             </small>
 
             <div class="isi">
