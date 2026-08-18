@@ -158,9 +158,16 @@ nav a:hover{
 }
 
 #toggle{
-display:none;
-font-size:28px;
-cursor:pointer;
+    display:none;
+    font-size:28px;
+    color:#0d6efd;
+    cursor:pointer;
+}
+
+@media (max-width:768px){
+    #toggle{
+        display:block;
+    }
 }
 
 .loading-float{
@@ -894,13 +901,6 @@ nav>a,
     background:#eef5ff;
     color:#0d6efd;
 }
-
-#toggle{
-        display:block;
-        font-size:26px;
-        color:#0d6efd;
-        cursor:pointer;
-    }
 
  nav{
         position:absolute;
