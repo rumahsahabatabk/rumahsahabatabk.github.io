@@ -127,8 +127,8 @@ document.addEventListener("click",(e)=>{
 
         menu.classList.remove("active");
 
-        toggle.classList.remove("fa-xmark");
-        toggle.classList.add("fa-bars");
+        icon.classList.remove("fa-times");
+        icon.classList.add("fa-bars");
 
     }
 
@@ -144,8 +144,8 @@ window.addEventListener("resize",()=>{
 
         menu.classList.remove("active");
 
-        toggle.classList.remove("fa-xmark");
-        toggle.classList.add("fa-bars");
+        icon.classList.remove("fa-times");
+        icon.classList.add("fa-bars");
 
         dropdowns.forEach(dropdown=>{
             dropdown.classList.remove("active");
